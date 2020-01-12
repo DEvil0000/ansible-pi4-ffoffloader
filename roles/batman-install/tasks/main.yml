@@ -60,7 +60,7 @@
   modprobe:
     name: batman_adv
     state: present
-  
+
 - name: Install batctl
   become: yes
   apt:
@@ -70,15 +70,21 @@
 - name: set batman to {{batman_protocol_mode}}
   become: yes
   command: batctl ra {{batman_protocol_mode}}
-  
+
 - name: Install bridge-utils
   become: yes
   apt:
     name: bridge-utils
     state: present
 
-- name: add module load config
+- name: add module load config for br-welt
   become: yes
   template:
     src: br-welt.j2
     dest: /etc/network/interfaces.d/br-welt
+
+- name: add module load config for br-ffbsee
+  become: yes
+  template:
+    src: br-ffbsee.j2
+    dest: /etc/network/interfaces.d/br-ffbsee
