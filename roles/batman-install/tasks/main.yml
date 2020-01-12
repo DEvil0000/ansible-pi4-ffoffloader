@@ -1,0 +1,84 @@
+---
+- name: Download and unzip batman
+  become: yes
+  unarchive:
+    src: "{{ batman_download_url }}"
+    dest: /usr/src/
+    remote_src: yes
+
+- name: Install dkms and pi-kernel-headers
+  become: yes
+  apt:
+    update_cache: yes
+    pkg:
+      - dkms
+      - raspberrypi-kernel-headers
+    state: present
+
+- name: Build batman
+  become: yes
+  make:
+    target: scripts
+    chdir: /usr/src/linux-headers-{{ansible_kernel}}
+  ignore_errors: yes
+
+- name: Write dkms config
+  become: yes
+  template:
+    src: dkms.j2
+    dest: /usr/src/batman-adv-{{batman_version}}/dkms.conf
+
+- name: dkms add
+  become: yes
+  command: dkms add -m batman-adv -v {{batman_version}}
+  register: ret
+  failed_when: ret.rc != 0 and ret.rc != 3
+  changed_when: ret.rc == 0
+
+- name: dkms build
+  become: yes
+  command: dkms build -m batman-adv -v {{batman_version}}
+
+- name: dkms install
+  become: yes
+  command: dkms install -m batman-adv -v {{batman_version}}
+
+- name: add module load config
+  become: yes
+  template:
+    src: batman-adv.module.j2
+    dest: /etc/modules-load.d/batman-adv.module.conf
+
+- name: load dummy module
+  become: yes
+  modprobe:
+    name: dummy
+    state: present
+
+- name: load batman module
+  become: yes
+  modprobe:
+    name: batman_adv
+    state: present
+  
+- name: Install batctl
+  become: yes
+  apt:
+    name: batctl
+    state: present
+
+- name: set batman to {{batman_protocol_mode}}
+  become: yes
+  command: batctl ra {{batman_protocol_mode}}
+  
+- name: Install bridge-utils
+  become: yes
+  apt:
+    name: bridge-utils
+    state: present
+
+- name: add module load config
+  become: yes
+  template:
+    src: br-welt.j2
+    dest: /etc/network/interfaces.d/br-welt

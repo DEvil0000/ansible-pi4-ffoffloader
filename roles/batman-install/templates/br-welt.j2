@@ -1,0 +1,15 @@
+#
+# Ansible controlled
+#
+auto br-welt
+iface br-welt inet dhcp
+        bridge-ports bat-welt
+        pre-up /usr/sbin/batctl ra {{batman_protocol_mode}}
+        pre-up /sbin/ip link add dummy-welt type dummy
+        pre-up /sbin/ip link set address $(ip -br l | grep eth0 | egrep -o '([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})' | head -1) dev dummy-welt
+        pre-up /sbin/ip link set dummy-welt up
+        pre-up /usr/sbin/batctl -m bat-welt if add dummy-welt
+        pre-up /sbin/ip link set bat-welt up
+        pre-up /usr/sbin/batctl -m bat-welt gw_mode client
+        pre-up /sbin/ip link set address $(ip -br l | grep eth0 | egrep -o '([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})' | head -1) dev bat-welt
+        post-up /sbin/ip link set address $(ip -br l | grep eth0 | egrep -o '([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})' | head -1) dev br-welt

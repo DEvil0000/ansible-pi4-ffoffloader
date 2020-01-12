@@ -1,0 +1,5 @@
+---
+- name: install and configure batman
+  hosts: offloader
+  roles:
+    - batman-install
