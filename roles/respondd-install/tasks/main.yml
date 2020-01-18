@@ -41,7 +41,7 @@
     group: 'root'
     mode: 'u=rw,g=,o='
 
-- name: Create welt directory
+- name: Create respondd config
   become: yes
   template:
     src: 'templates/respondd.j2'
