@@ -7,3 +7,45 @@
       - git
       - python3-netifaces
     state: present
+
+- name: Clone ffmuc respondd with git
+  become: yes
+  git:
+    repo: 'https://github.com/freifunkMUC/ext-respondd'
+    dest: /opt/ext-respondd/
+
+- name: Copy systemd file
+  become: yes
+  copy:
+    remote_src: yes
+    src: /opt/ext-respondd/ext-respondd.service.example
+    dest: /etc/systemd/system/ext-respondd.service
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+
+- name: reload systemd and start respondd
+  become: yes
+  systemd:
+    name: ext-respondd
+    daemon_reload: yes
+    enabled: yes
+    state: restarted
+
+- name: Create welt directory
+  become: yes
+  template:
+    src: 'templates/router_info.j2'
+    dest: '/opt/ext-respondd/alias.json'
+    owner: 'root'
+    group: 'root'
+    mode: 'u=rw,g=,o='
+
+- name: Create welt directory
+  become: yes
+  template:
+    src: 'templates/respondd.j2'
+    dest: '/opt/ext-respondd/config.json'
+    owner: 'root'
+    group: 'root'
+    mode: 'u=rw,g=,o='

@@ -13,3 +13,5 @@
   hosts: offloader
   roles:
     - respondd-install
+  vars:
+    router_name: "bodensee-uboot"
