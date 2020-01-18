@@ -1,17 +1,36 @@
 ---
 - name: install and configure batman
   hosts: offloader
+  tags:
+    - bat
+    - batman
+    - batman5
+    - batmanv5
+    - batman_v5
   roles:
     - batman-install
 
 - name: install and configure fastd
   hosts: offloader
+  tags:
+    - fastd
   roles:
     - fastd-install
   
 - name: install and configure respondd
   hosts: offloader
+  tags:
+    - respondd
   roles:
     - respondd-install
   vars:
     router_name: "bodensee-uboot"
+
+- name: install and configure wifi AP
+  hosts: offloader
+  tags:
+    - wifi
+    - wlan
+    - hostapd
+  roles:
+    - wifi-ap

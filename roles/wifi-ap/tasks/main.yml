@@ -1,0 +1,42 @@
+---
+- name: Install hostapd
+  become: yes
+  apt:
+    update_cache: yes
+    name: hostapd
+    state: present
+
+- name: Write hostapd defaults
+  become: yes
+  template:
+    src: 'templates/hostapd_defaults.j2'
+    dest: '/etc/default/hostapd'
+    owner: 'root'
+    group: 'root'
+    mode: 'u=rw,g=,o='
+
+- name: Writing hostapd config
+  become: yes
+  template:
+    src: 'templates/hostapd.j2'
+    dest: '/etc/hostapd/hostapd.conf'
+    owner: 'root'
+    group: 'root'
+    mode: 'u=rw,g=,o='
+
+- name: Writing wlan0 config
+  become: yes
+  template:
+    src: 'templates/wlan0.j2'
+    dest: '/etc/network/interfaces.d/wlan0'
+    owner: 'root'
+    group: 'root'
+    mode: 'u=rw,g=,o='
+  
+- name: start hostapd
+  become: yes
+  systemd:
+    name: hostapd
+    enabled: yes
+    masked: no
+    state: restarted

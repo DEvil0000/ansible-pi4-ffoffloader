@@ -1,0 +1,3 @@
+---
+hostapd_ssid: muenchen.freifunk.net/welt
+hostapd_bridge: br-welt
