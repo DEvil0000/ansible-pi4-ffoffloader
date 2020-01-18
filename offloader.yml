@@ -3,3 +3,13 @@
   hosts: offloader
   roles:
     - batman-install
+
+- name: install and configure fastd
+  hosts: offloader
+  roles:
+    - fastd-install
+  
+- name: install and configure respondd
+  hosts: offloader
+  roles:
+    - respondd-install

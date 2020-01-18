@@ -80,7 +80,7 @@
 - name: add module load config for br-welt
   become: yes
   template:
-    src: br-welt.j2
+    src: br-ffmuc-welt.j2
     dest: /etc/network/interfaces.d/br-welt
 
 - name: add module load config for br-ffbsee

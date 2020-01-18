@@ -1,64 +1,70 @@
 ---
 - name: Install fastd
-    become: yes
-    apt:
-      update_cache: yes
-      pkg:
-        - fastd
-      state: present
+  become: yes
+  apt:
+    update_cache: yes
+    name: fastd
+    state: present
 
 - name: Create fastd directory
+  become: yes
   file:
     path: '/etc/fastd'
     state: directory
     mode: 'u=rwx,g=rx,o=rx'
 
+- name: Check that there is no fastd key
+  become: yes
+  stat:
+    path: /etc/fastd/secret_key.txt
+  register: stat_result
+
 - name: Generate fastd secret key
-    shell: 'fastd --generate-key --machine-readable > /etc/fastd/secret.txt;'
-    args:
-      creates: '/etc/fastd/secret.txt'
-    when: fastd_secret_key == ''
+  shell: 'fastd --generate-key --machine-readable'
+  register: registered_fastd_secret
+  when: fastd_secret_key == '' and stat_result.stat.exists == False 
+  check_mode: no
 
-- name: Retrieve fastd secret key
-  slurp:
-    src: '/etc/fastd/secret.txt'
-  register: fastd_secret_key_data
-  when: fastd_secret_key == ''
+- name: Read secret key
+  become: yes
+  shell: 'cat /etc/fastd/secret_key.txt'
+  register: registered_fastd_secret
+  check_mode: no
+  when: fastd_secret_key == '' and stat_result.stat.exists == True 
 
-- name: Read in fastd secret key
+- name: Set fastd secret key
   set_fact:
-    fastd_secret_key: "{{ fastd_secret_key_data['content'] | b64decode | trim }}"
+    fastd_secret_key: "{{ registered_fastd_secret.stdout | trim }}"
   when: fastd_secret_key == ''
 
 - name: Put secret key to host
+  become: yes
   template:
-    src: 'templates/secret_key.txt'
+    src: 'templates/secret_key.j2'
     dest: '/etc/fastd/secret_key.txt'
-    owner: 'nobody'
+    owner: 'root'
     group: 'root'
-    mode: 'u=rw,g=r,o=r'
+    mode: 'u=rw,g=,o='
 
-- name: Put secret key to host as secret.txt
+- name: Create fastd directory
+  become: yes
+  file:
+    path: '/etc/fastd/welt'
+    state: directory
+    mode: 'u=rwx,g=rx,o=rx'
+
+- name: Create welt directory
+  become: yes
   template:
-    src: 'templates/secret.txt'
-    dest: '/etc/fastd/secret.txt'
-    owner: 'nobody'
+    src: 'templates/ffmuc-welt.j2'
+    dest: '/etc/fastd/welt/fastd.conf'
+    owner: 'root'
     group: 'root'
-    mode: 'u=rw,g=r,o=r'
+    mode: 'u=rw,g=,o='
 
-- name: Create fastd public key
-  shell: 'fastd --config /etc/fastd/secret_key.txt --show-key --machine-readable > /etc/fastd/public.txt;'
-  args:
-    creates: '/etc/fastd/public.txt'
-
-- name: Read in fastd public key
-  set_fact:
-    fastd_public_key: "{{ fastd_public_key_data['content'] | b64decode | trim }}"
-
-- name: Put public key back to host
-  template:
-    src: 'templates/public_key.txt'
-    dest: '/etc/fastd/public_key.txt'
-    owner: 'nobody'
-    group: 'root'
-    mode: 'u=rw,g=r,o=r'
+- name: Enable and start fastd
+  become: yes
+  systemd:
+    name: fastd@welt
+    state: started
+    enabled: yes

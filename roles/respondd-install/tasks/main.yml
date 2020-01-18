@@ -1,9 +1,9 @@
 ---
 - name: Install fastd
-    become: yes
-    apt:
-      update_cache: yes
-      pkg:
-        - git
-        - python3-netifaces
-      state: present
+  become: yes
+  apt:
+    update_cache: yes
+    pkg:
+      - git
+      - python3-netifaces
+    state: present
