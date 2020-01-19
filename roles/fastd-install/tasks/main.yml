@@ -22,7 +22,7 @@
 - name: Generate fastd secret key
   shell: 'fastd --generate-key --machine-readable'
   register: registered_fastd_secret
-  when: fastd_secret_key == '' and stat_result.stat.exists == False 
+  when: fastd_secret_key == '' and stat_result.stat.exists == False
   check_mode: no
 
 - name: Read secret key
@@ -30,7 +30,7 @@
   shell: 'cat /etc/fastd/secret_key.txt'
   register: registered_fastd_secret
   check_mode: no
-  when: fastd_secret_key == '' and stat_result.stat.exists == True 
+  when: fastd_secret_key == '' and stat_result.stat.exists == True
 
 - name: Set fastd secret key
   set_fact:
@@ -46,14 +46,14 @@
     group: 'root'
     mode: 'u=rw,g=,o='
 
-- name: Create fastd directory
+- name: Create fastd welt directory
   become: yes
   file:
     path: '/etc/fastd/welt'
     state: directory
     mode: 'u=rwx,g=rx,o=rx'
 
-- name: Create welt directory
+- name: Create welt config
   become: yes
   template:
     src: 'templates/ffmuc-welt.j2'
@@ -62,9 +62,32 @@
     group: 'root'
     mode: 'u=rw,g=,o='
 
-- name: Enable and start fastd
+- name: Create fastd ffbsee directory
+  become: yes
+  file:
+    path: '/etc/fastd/ffbsee'
+    state: directory
+    mode: 'u=rwx,g=rx,o=rx'
+
+- name: Create ffbsee config
+  become: yes
+  template:
+    src: 'templates/ffbsee.j2'
+    dest: '/etc/fastd/ffbsee/fastd.conf'
+    owner: 'root'
+    group: 'root'
+    mode: 'u=rw,g=,o='
+
+- name: Enable and start fastd welt
   become: yes
   systemd:
     name: fastd@welt
+    state: started
+    enabled: yes
+
+- name: Enable and start fastd ffbsee
+  become: yes
+  systemd:
+    name: fastd@ffbsee
     state: started
     enabled: yes
