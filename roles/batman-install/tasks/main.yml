@@ -77,14 +77,11 @@
     name: bridge-utils
     state: present
 
-- name: add module load config for br-welt
+- name: "add module load config for br-{{item}}"
   become: yes
   template:
-    src: br-ffmuc-welt.j2
-    dest: /etc/network/interfaces.d/br-welt
-
-- name: add module load config for br-ffbsee
-  become: yes
-  template:
-    src: br-ffbsee.j2
-    dest: /etc/network/interfaces.d/br-ffbsee
+    src: br-community-segment.j2
+    dest: "/etc/network/interfaces.d/br-{{item}}"
+  vars:
+    community_segment: "{{item}}"
+  loop: "{{community_segments}}"

@@ -2,3 +2,6 @@
 batman_version: "2019.5"
 batman_download_url: "https://downloads.open-mesh.org/batman/releases/batman-adv-{{batman_version}}/batman-adv-{{batman_version}}.tar.gz"
 batman_protocol_mode: "BATMAN_V"
+community_segments:
+  - welt
+  - ffbsee

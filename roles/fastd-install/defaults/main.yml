@@ -1,2 +1,35 @@
 ---
 fastd_secret_key: ''
+community_segments:
+  - name: welt
+    peers:
+    - name: "gw01.in.ffmuc.net"
+      key: "e9e222c88de0613d7c2f2ca13b61e9146ca15c344b3d7ec55e0705f9fb730706"
+      remote: "gw01.ext.ffmuc.net"
+      port: 30011
+    - name: "gw02.in.ffmuc.net"
+      key: "9520145b940bc89358198918f4fb085b24280c3f9ac68600407395f89e856dcb"
+      remote: "gw02.ext.ffmuc.net"
+      port: 30011
+    - name: "gw07.in.ffmuc.net"
+      key: "845702d2d9c45f584f405cedb453d1fd61135273c08553156caf0cfa780c7b9a"
+      remote: "gw07.ext.ffmuc.net"
+      port: 30011
+  - name: ffbsee
+    peers:
+    - name: "gw01"
+      key: "7fa0b1bc37f77607ad273dbdcfd6a7a6f0c62139c969c68b1b0ce50ebaf86ce5"
+      remote: "speedtest5.gw01.ffbsee.net"
+      port: 1250
+    - name: "gw02"
+      key: "29e965b4c8cf4ccf1d2387010965d0d4fa6d2713148c9d95730ffa0e9dfadc2e"
+      remote: "speedtest5.gw02.ffbsee.net"
+      port: 1250
+    - name: "gw03"
+      key: "b59baed600c244df6b7f58d994958d53553828f7ad37bdac8a8be207af5ca5f8"
+      remote: "speedtest5.gw03.ffbsee.net"
+      port: 1250
+    - name: "gw04"
+      key: "ab46cf23a48111d46451e32a60c18784ec47b903a5ae7c8df1c1ca38f73857fb"
+      remote: "speedtest5.gw04.ffbsee.net"
+      port: 1250

@@ -1,0 +1,37 @@
+#
+# {{ community_segment }} FASTd configuration
+#
+
+log to syslog level info;
+
+interface "fastd-{{ community_segment }}";
+
+method "salsa2012+umac";
+method "null";
+
+secret "{{ fastd_secret_key }}";
+mtu 1406;
+
+status socket "/var/run/fastd.{{ community_segment }}.sock";
+
+on up "
+        batctl ra BATMAN_V
+        ip link set $INTERFACE down
+        ip link set address $(ip -br l | grep eth0 | egrep -o '([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})' | head -1) dev $INTERFACE
+        ip link set $INTERFACE up
+        batctl -m bat-{{ community_segment }} if add $INTERFACE
+";
+
+on down "
+        batctl -m bat-{{ community_segment }} if del $INTERFACE
+";
+
+peer group "{{ community_segment }}" {
+        peer limit 1;
+        {% for peer in peers %}
+        peer "{{ peer.name }}" {
+                key "{{ peer.key }}";
+                remote "{{ peer.remote }}" port {{ peer.port }};
+        }
+        {% endfor %}
+}

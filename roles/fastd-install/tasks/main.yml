@@ -46,48 +46,31 @@
     group: 'root'
     mode: 'u=rw,g=,o='
 
-- name: Create fastd welt directory
+- name: "Create fastd {{item.name}} directory"
   become: yes
   file:
-    path: '/etc/fastd/welt'
+    path: '/etc/fastd/{{item.name}}'
     state: directory
     mode: 'u=rwx,g=rx,o=rx'
+  loop: "{{community_segments}}"
 
-- name: Create welt config
+- name: "Create {{item.name}} config"
   become: yes
   template:
-    src: 'templates/ffmuc-welt.j2'
-    dest: '/etc/fastd/welt/fastd.conf'
+    src: 'templates/fastd.j2'
+    dest: "/etc/fastd/{{item.name}}/fastd.conf"
     owner: 'root'
     group: 'root'
     mode: 'u=rw,g=,o='
+  vars:
+    community_segment: "{{ item.name }}"
+    peers: "{{ item.peers }}"
+  loop: "{{community_segments}}"
 
-- name: Create fastd ffbsee directory
-  become: yes
-  file:
-    path: '/etc/fastd/ffbsee'
-    state: directory
-    mode: 'u=rwx,g=rx,o=rx'
-
-- name: Create ffbsee config
-  become: yes
-  template:
-    src: 'templates/ffbsee.j2'
-    dest: '/etc/fastd/ffbsee/fastd.conf'
-    owner: 'root'
-    group: 'root'
-    mode: 'u=rw,g=,o='
-
-- name: Enable and start fastd welt
+- name: "Enable and start fastd {{item.name}}"
   become: yes
   systemd:
-    name: fastd@welt
+    name: "fastd@{{item.name}}"
     state: started
     enabled: yes
-
-- name: Enable and start fastd ffbsee
-  become: yes
-  systemd:
-    name: fastd@ffbsee
-    state: started
-    enabled: yes
+  loop: "{{community_segments}}"
