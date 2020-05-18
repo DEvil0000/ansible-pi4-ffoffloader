@@ -1,4 +1,12 @@
 ---
+- name: Auxiliary Tools
+  hosts: offloader
+  tags:
+    - tmux
+    - speedtest
+  roles:
+    - tools-install
+
 - name: install and configure batman
   hosts: offloader
   tags:

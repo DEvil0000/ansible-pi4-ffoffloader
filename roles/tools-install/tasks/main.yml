@@ -1,0 +1,17 @@
+---
+- name: Install additional tools
+  become: yes
+  apt:
+    update_cache: yes
+    pkg:
+      - aptitude
+      - fsarchiver
+      - iftop
+      - nano
+      - net-tools
+      - speedtest-cli
+      - tmux
+      - traceroute
+      - vlan
+      - 
+    state: present
