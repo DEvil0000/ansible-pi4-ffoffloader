@@ -7,6 +7,13 @@
   roles:
     - tools-install
 
+- name: Install Docker Stuff
+  hosts: offloader
+  tags:
+    - docker
+  roles:
+    - docker-install
+
 - name: install and configure batman
   hosts: offloader
   tags:

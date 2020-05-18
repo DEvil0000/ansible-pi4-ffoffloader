@@ -1,0 +1,36 @@
+---
+- name: Install prerequisite tools for docker
+  become: yes
+  apt:
+    update_cache: yes
+    pkg:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg-agent
+      - software-properties-common
+    state: present
+
+- name: Add an Apt signing key for docker
+  become: yes
+  apt_key:
+    id: 0EBFCD88
+    url:  https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add Docker Apt-Source
+  become: yes
+  apt_repository:
+    repo: deb [arch=i686] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable
+    state: present
+    filename: 100-ubnt-docker
+
+- name: Install docker
+  become: yes
+  apt:
+    update_cache: yes
+    pkg:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    state: present
