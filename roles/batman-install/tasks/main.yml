@@ -15,6 +15,10 @@
       - raspberrypi-kernel-headers
     state: present
 
+- name: Get current Kernel-Version
+  command: uname -r
+  register: ansible_kernel
+
 - name: Remove missing link in Makefile
   become: yes
   shell: sed -i '/+= selinux/s/^/# /' /usr/src/linux-headers-*-generic/scripts/Makefile
