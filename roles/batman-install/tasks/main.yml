@@ -6,13 +6,15 @@
     dest: /usr/src/
     remote_src: yes
 
-- name: Install dkms and pi-kernel-headers
+- name: Install dkms and kernel-headers and some stuff for make
   become: yes
   apt:
     update_cache: yes
     pkg:
       - dkms
       - raspberrypi-kernel-headers
+#      - linux-kernel-headers
+      - ifupdown
     state: present
 
 - name: Get current Kernel-Version
