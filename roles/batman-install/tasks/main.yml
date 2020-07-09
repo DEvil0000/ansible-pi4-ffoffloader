@@ -100,4 +100,11 @@
   become: yes
   template:
     src: vlan.j2
-    dest: "/etc/network/interfaces.d/vlan123"
+    dest: "/etc/network/interfaces.d/vlan{{item[1]}}"
+  vars:
+    community_segment: "{{item[0]}}"
+    vlan_id: "{{item[1]}}"
+  loop: "{{community_segments | zip(vlan_ids) | list() }}"
+  tags:
+    - vlan
+    - vlans
