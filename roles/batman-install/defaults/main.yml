@@ -5,3 +5,4 @@ batman_protocol_mode: "BATMAN_V"
 community_segments:
   - welt
   - ffbsee
+inbound_lan_interface: "eth0"

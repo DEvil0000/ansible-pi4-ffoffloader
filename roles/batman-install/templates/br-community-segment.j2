@@ -6,10 +6,10 @@ iface br-{{ community_segment }} inet dhcp
         bridge-ports bat-{{ community_segment }}
         pre-up /usr/sbin/batctl ra {{batman_protocol_mode}}
         pre-up /sbin/ip link add dummy-{{ community_segment }} type dummy
-        pre-up /sbin/ip link set address $(ip -br l | grep eth0 | egrep -o '([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})' | head -1) dev dummy-{{ community_segment }}
+        pre-up /sbin/ip link set address $(ip -br l | grep {{ inbound_lan_interface }} | egrep -o '([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})' | head -1) dev dummy-{{ community_segment }}
         pre-up /sbin/ip link set dummy-{{ community_segment }} up
         pre-up /usr/sbin/batctl -m bat-{{ community_segment }} if add dummy-{{ community_segment }}
         pre-up /sbin/ip link set bat-{{ community_segment }} up
         pre-up /usr/sbin/batctl -m bat-{{ community_segment }} gw_mode client
-        pre-up /sbin/ip link set address $(ip -br l | grep eth0 | egrep -o '([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})' | head -1) dev bat-{{ community_segment }}
-        post-up /sbin/ip link set address $(ip -br l | grep eth0 | egrep -o '([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})' | head -1) dev br-{{ community_segment }}
+        pre-up /sbin/ip link set address $(ip -br l | grep {{ inbound_lan_interface }} | egrep -o '([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})' | head -1) dev bat-{{ community_segment }}
+        post-up /sbin/ip link set address $(ip -br l | grep {{ inbound_lan_interface }} | egrep -o '([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})' | head -1) dev br-{{ community_segment }}
