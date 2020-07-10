@@ -37,9 +37,8 @@
 
 - name: Copy Docker-Container-Startup-Script for Unifi-Controller
   become: yes
-  copy:
-    remote_src: yes
-    src: 'templates/start-unifi-docker.sh.j2'
+  template:
+    src: 'start-unifi-docker.sh.j2'
     dest: /home/ffbsee/start-unifi-docker.sh
     owner: ffbsee
     group: ffbsee
