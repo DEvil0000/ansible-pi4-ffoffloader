@@ -59,6 +59,11 @@
     src: batman-adv.module.j2
     dest: /etc/modules-load.d/batman-adv.module.conf
 
+- name: make sure modules can be found
+  become: yes
+  command: depmod -a
+  changed_when: false
+
 - name: load dummy module
   become: yes
   modprobe:
