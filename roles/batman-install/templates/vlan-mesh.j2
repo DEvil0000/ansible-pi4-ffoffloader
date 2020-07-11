@@ -1,0 +1,7 @@
+auto vlan{{ vlan_id }}
+
+iface vlan{{ vlan_id }} inet manual
+      vlan-raw-device {{ inbound_lan_interface }}
+      post-up /usr/sbin/batctl ra BATMAN_V
+      post-up /usr/sbin/batctl -m bat-{{ community_segment }} if add vlan{{ vlan_id }}
+      post-down /usr/sbin/batctl -m bat-{{ community_segment }} if del vlan{{ vlan_id }}

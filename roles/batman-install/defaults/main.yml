@@ -6,6 +6,9 @@ community_segments:
   - welt
   - ffbsee
 inbound_lan_interface: "eth0"
-vlan_ids:
+ff_vlan_ids:
   - 666
   - 123
+mesh_vlan_ids:
+  - 667
+  - 124

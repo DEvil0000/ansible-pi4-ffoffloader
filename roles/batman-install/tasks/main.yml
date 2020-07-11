@@ -91,12 +91,16 @@
   become: yes
   template:
     src: br-community-segment.j2
-    dest: "/etc/network/interfaces.d/br-{{item}}"
+    dest: "/etc/network/interfaces.d/br-{{item[0]}}"
   vars:
-    community_segment: "{{item}}"
-  loop: "{{community_segments}}"
+    community_segment: "{{item[0]}}"
+    additional_interface: "{{item[1]}}"
+  loop: "{{community_segments | zip(ff_vlan_ids) | list() }}"
+  tags:
+    - vlan
+    - vlans
 
-- name: "add vlan"
+- name: "add ff vlan"
   become: yes
   template:
     src: vlan.j2
@@ -104,7 +108,20 @@
   vars:
     community_segment: "{{item[0]}}"
     vlan_id: "{{item[1]}}"
-  loop: "{{community_segments | zip(vlan_ids) | list() }}"
+  loop: "{{community_segments | zip(ff_vlan_ids) | list() }}"
+  tags:
+    - vlan
+    - vlans
+
+- name: "add mesh vlan"
+  become: yes
+  template:
+    src: vlan-mesh.j2
+    dest: "/etc/network/interfaces.d/vlan{{item[1]}}"
+  vars:
+    community_segment: "{{item[0]}}"
+    vlan_id: "{{item[1]}}"
+  loop: "{{community_segments | zip(mesh_vlan_ids) | list() }}"
   tags:
     - vlan
     - vlans
