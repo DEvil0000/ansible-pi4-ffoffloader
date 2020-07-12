@@ -1,1 +1,2 @@
 inbound_lan_interface: "enp2s0"
+outbound_lan_interface: "enp1s0"
