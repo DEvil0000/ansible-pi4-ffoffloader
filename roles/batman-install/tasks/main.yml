@@ -130,3 +130,14 @@
   tags:
     - vlan
     - vlans
+
+- name: Cronjob checking if bridge-interface is up and take it up otherwise
+  become: yes
+  cron:
+    name: "ReUp stuck bridge br-{{ item }}"
+    minute: "*/5"
+    hour: "*"
+    job: "ip a | grep -Eq ': br-{{ item }}:.*state UP' || ifup br-{{ item }}"
+  loop: "{{community_segments}}"
+  tags:
+    - brcronjob
