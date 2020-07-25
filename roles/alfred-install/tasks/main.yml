@@ -10,14 +10,12 @@
   become: yes
   make:
     params:
-      NUM_THREADS: 4
       CONFIG_ALFRED_GPSD: n
     chdir: /usr/src/alfred-{{batman_version}}/
 
 - name: Run 'install' alfred as root
   make:
     params:
-      NUM_THREADS: 4
       CONFIG_ALFRED_GPSD: n
     chdir: /usr/src/alfred-{{batman_version}}/
     target: install
