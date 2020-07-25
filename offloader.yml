@@ -51,5 +51,4 @@
   roles:
     - wifi-ap
   vars:
-    hostapd_bridge:
-      - "br-ffbsee"
+    hostapd_bridge: "br-ffbsee"
