@@ -3,8 +3,8 @@
 #
 auto br-{{ community_segment }}
 iface br-{{ community_segment }} inet dhcp
-        bridge-ports bat-{{ community_segment }} {% if additional_interface is defined %}vlan{{ additional_interface }}
-{% endif %}
+        bridge-ports bat-{{ community_segment }} {% for interface in additional_interfaces %}{{ interface }} {% endfor %}
+
         pre-up /usr/sbin/batctl ra {{batman_protocol_mode}}
         pre-up /sbin/ip link add dummy-{{ community_segment }} type dummy
         pre-up /sbin/ip link set address $(ip -br l | grep {{ inbound_lan_interface }} | egrep -o '([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})' | head -1) dev dummy-{{ community_segment }}
@@ -14,3 +14,4 @@ iface br-{{ community_segment }} inet dhcp
         pre-up /usr/sbin/batctl -m bat-{{ community_segment }} gw_mode client
         pre-up /sbin/ip link set address $(ip -br l | grep {{ inbound_lan_interface }} | egrep -o '([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})' | head -1) dev bat-{{ community_segment }}
         post-up /sbin/ip link set address $(ip -br l | grep {{ inbound_lan_interface }} | egrep -o '([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})' | head -1) dev br-{{ community_segment }}
+        post-down /sbin/ip link delete dummy-{{ community_segment }}

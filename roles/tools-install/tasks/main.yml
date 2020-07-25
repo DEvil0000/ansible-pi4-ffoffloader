@@ -14,5 +14,6 @@
       - tmux
       - traceroute
       - vlan
-      - 
+      - git
+      - bc
     state: present
