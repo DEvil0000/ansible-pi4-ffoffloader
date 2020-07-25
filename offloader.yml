@@ -53,3 +53,12 @@
   vars:
     hostapd_bridge:
       - "br-ffbsee"
+
+- name: install alfred-scripts for ffbsee
+  hosts: uboot
+  tags:
+    - alfred
+    - printmap
+    - print-map
+  roles:
+    - alfred-install

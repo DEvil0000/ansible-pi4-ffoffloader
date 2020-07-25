@@ -1,0 +1,50 @@
+---
+- name: Download alfred
+  become: yes
+  unarchive:
+    src: "{{ alfred_download_url }}"
+    dest: /usr/src/
+    remote_src: yes
+
+- name: Build alfred
+  become: yes
+  make:
+    params:
+      NUM_THREADS: 4
+      CONFIG_ALFRED_GPSD: n
+    chdir: /usr/src/alfred-{{batman_version}}/
+
+- name: Run 'install' alfred as root
+  make:
+    params:
+      NUM_THREADS: 4
+      CONFIG_ALFRED_GPSD: n
+    chdir: /usr/src/alfred-{{batman_version}}/
+    target: install
+  become: yes
+
+- name: Copy alfred-mapprint-script for ffbsee
+  become: yes
+  template:
+    src: print_map.sh.j2
+    dest: /home/{{ansible_user_id}}/scripts/alfred-print-map.sh
+    owner: "{{ansible_user_id}}"
+    group: "{{ansible_user_id}}"
+    mode: 'u=rwx,g=rx,o=rx'
+
+- name: Create ffbsee-alfred as a systemctl service
+  become: yes
+  template:
+    src: ffbsee-alfred.service.j2
+    dest: /etc/systemd/system/ffbsee-alfred.service
+    owner: root
+    group: root
+    mode: 'u=rw,g=r,o=r'
+
+- name: Cronjob for mapprint-script
+  become: yes
+  cron:
+    name: "Publish Data on ffbsee-alfred"
+    minute: "*/5"
+    hour: "*"
+    job: /home/{{ansible_user_id}}/scripts/alfred-print-map.sh -p > /dev/null

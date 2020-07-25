@@ -1,0 +1,16 @@
+---
+alfred_community: "Bodensee"
+alfred_version: "special edition"
+alfred_name: "uboot-offloader-pi"
+alfred_longitude: ""
+alfred_latitude: ""
+alfred_contact: "ibimsalfred@batman.cave"
+alfred_autoupdaterenabled: "false"
+alfred_autoupdaterbranch: ""
+#maplevel could be: basic/more/all
+alfred_maplevel: "all"
+alfred_interface_br: "br-ffbsee"
+alfred_interface_bat: "bat-ffbsee"
+alfred_v6prefix: "fdef:1701:b5ee:23"
+batman_version: "2020.1"
+alfred_download_url: "https://downloads.open-mesh.org/batman/releases/batman-adv-{{batman_version}}/alfred-{{batman_version}}.tar.gz"

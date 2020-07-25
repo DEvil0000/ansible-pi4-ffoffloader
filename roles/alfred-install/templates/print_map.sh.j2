@@ -1,0 +1,134 @@
+#!/bin/sh
+#Print out local connection data for map creation
+
+memory_usage()
+{
+	meminfo=$(cat /proc/meminfo)
+	free=$(echo "$meminfo" | awk /^MemFree:/'{print($2)}')
+	buffers=$(echo "$meminfo" | awk /^Buffers:/'{print($2)}')
+	cached=$(echo "$meminfo" | awk /^Cached:/'{print($2)}')
+	total=$(echo "$meminfo" | awk /^MemTotal:/'{print($2)}')
+	echo $free $buffers $cached $total | awk '{ printf("%f", 1 - ($1 + $2 + $3) / $4)}'
+}
+
+rootfs_usage()
+{
+	df / | awk 'BEGIN {val=100} NR==2 {val=$5} END { printf("%.2f", val/100) }'
+}
+
+print_basic() {
+	local community="{{ alfred_community }}"
+#	local version="{{ alfred_version }}"
+	local version="$(lsb_release -is)"
+	local name="{{ alfred_name }}"
+	local longitude="{{ alfred_longitude }}"
+	local latitude="{{ alfred_latitude }}"
+	local contact="{{ alfred_contact }}"
+	local autoupdater_enabled="{{ alfred_autoupdaterenabled }}"
+	local autoupdater_branch="{{ alfred_autoupdaterbranch }}"
+
+	[ -n "$contact" ] && echo -n "\"contact\" : \"$contact\", "
+	[ -n "$name" ] && echo -n "\"name\" : \"$name\", "
+	[ -n "$version" ] && echo -n "\"firmware\" : \"ffbsee-$version\", "
+	[ -n "$community" ] && echo -n "\"community\" : \"$community\", "
+
+	if [ "$autoupdater_enabled" = "1" ]; then
+		echo -n "\"autoupdater\" : \"$autoupdater_branch\", "
+	fi
+
+	if [ -n "$longitude" -a -n "$latitude" ]; then
+		echo -n "\"longitude\" : $longitude, "
+		echo -n "\"latitude\" : $latitude, "
+	fi
+
+	batgwmac=$(batctl meshif bat-ffbsee gwl -n | grep -oP '(\*|=>)\s+([0-9a-f:]+)\s\([\d \.]+\)\s+([0-9a-f:]+)' | sed 's/\* \(.*\) (.*/\1/' | sed 's/://g')
+
+	mygw="$batgwmac"
+	if [ "$batgwmac" = "b2a02a544fc5" ]; then
+		mygw="gw01"
+	fi
+	if [ "$batgwmac" = "7a2785ad0b4d" ]; then
+		mygw="gw03"
+	fi
+	if [ "$batgwmac" = "8e1e276b36d5" ]; then
+		mygw="gw04"
+	fi
+
+	echo -n "\"model\" : \"$(cat /proc/cpuinfo | grep -Po '^Model[^:]+:[\t ]+\K.*')\", "
+	echo -n "\"using_gateway\" : \"$mygw\", "
+	echo -n "\"links\" : ["
+
+	printLink() { echo -n "{ \"smac\" : \"$(cat /sys/class/net/$3/address)\", \"dmac\" : \"$1\", \"qual\" : $2 }"; }
+	IFS="
+"
+	nd=0
+	for entry in $(batctl meshif bat-ffbsee neighbors -H 2> /dev/null | awk -F '[][)( \t]+' '/^[a-f0-9]/{ print($1, $3, $4) }'); do
+		[ $nd -eq 0 ] && nd=1 || echo -n ", "
+		IFS=" "
+		printLink $entry
+	done
+
+	echo -n '], '
+
+	macs=$(cat /sys/class/net/*/address)
+	echo -n "$(batctl meshif bat-ffbsee translocal -H 2> /dev/null | awk -v macs="$macs" 'BEGIN{c=0} {if (index(macs, $1) == 0){ c+=1 }} END {printf("\"clientcount\" : %d", c)}')"
+}
+
+print_more() {
+	echo -n "\"loadavg\" : $(uptime | awk '{print($NF)}'), "
+	echo -n "\"uptime\" : $(awk '{print(int($1))}' /proc/uptime), "
+
+	print_basic
+}
+
+print_all() {
+	echo -n "\"rootfs_usage\" : $(rootfs_usage), "
+	echo -n "\"memory_usage\" : $(memory_usage), "
+	echo -n "\"addresses\" : ["
+	ip -6 address show dev {{ alfred_interface_br }} 2> /dev/null | grep -v "{{ alfred_v6prefix }}::/64" | tr '/' ' ' | awk 'BEGIN{i=0} /inet/ { if($2 !~ /^fe80/) { printf("%s\"%s\"", (i ? ", " : ""), $2); i=1; }}'
+	echo -n "], "
+
+	print_more
+}
+
+print() {
+	echo -n "{"
+
+	case $1 in
+		"basic")
+			print_basic
+			;;
+		"more")
+			print_more
+			;;
+		"all")
+			print_all
+			;;
+		*)
+			;;
+    esac
+
+	echo -n '}'
+}
+
+
+map_level="{{ alfred_maplevel }}"
+
+if [ "$1" = "-p" ]; then
+	[ $map_level = "none" ] && exit 0
+
+	content="$(print $map_level)"
+	if [ -n "$content" ]; then
+		#make sure alfred is running
+		pidof alfred > /dev/null || systemctl start ffbsee-alfred
+
+		#publish content via alfred
+		echo "$content" | gzip -c - | alfred -s 64 -u /var/run/alfred-ffbsee.sock
+
+		echo "map published"
+	else
+		echo "nothing published"
+	fi
+else
+	print $map_level
+fi
