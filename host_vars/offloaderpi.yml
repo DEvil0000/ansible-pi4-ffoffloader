@@ -1,0 +1,5 @@
+---
+#TODO those names are very descriptive
+inbound_lan_interface: "wlan0"
+outbound_lan_interface: "eth0"
+

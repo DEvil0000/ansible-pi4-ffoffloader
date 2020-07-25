@@ -40,7 +40,7 @@
     - respondd-install
   vars:
     router_name: "bodensee-uboot"
-    respondd_wan: {{ outbound_lan_interface }}
+    respondd_wan: "{{ outbound_lan_interface }}"
 
 - name: install and configure wifi AP
   hosts: offloader
@@ -50,3 +50,6 @@
     - hostapd
   roles:
     - wifi-ap
+  vars:
+    hostapd_bridge:
+      - "br-ffbsee"

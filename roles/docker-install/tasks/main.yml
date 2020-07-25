@@ -14,16 +14,15 @@
 - name: Add an Apt signing key for docker
   become: yes
   apt_key:
-    id: 0EBFCD88
-    url:  https://download.docker.com/linux/ubuntu/gpg
+    url:  "https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg"
     state: present
 
 - name: Add Docker Apt-Source
   become: yes
   apt_repository:
-    repo: deb [arch=i686] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable
+    repo: "deb https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable"
     state: present
-    filename: 100-ubnt-docker
+    filename: docker.conf
 
 - name: Install docker
   become: yes
@@ -39,7 +38,5 @@
   become: yes
   template:
     src: 'start-unifi-docker.sh.j2'
-    dest: /home/ffbsee/start-unifi-docker.sh
-    owner: ffbsee
-    group: ffbsee
+    dest: "/home/{{ ansible_user }}/start-unifi-docker.sh"
     mode: u=rwxr,g=rx,o=x
