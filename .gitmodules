@@ -1,0 +1,3 @@
+[submodule "roles/kdump"]
+	path = roles/kdump
+	url = https://github.com/wingcon/ansible-role-kdump.git

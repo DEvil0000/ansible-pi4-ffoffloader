@@ -52,3 +52,24 @@
     - wifi-ap
   vars:
     hostapd_bridge: "br-ffbsee"
+
+- name: install and activate kdump
+  hosts: offloader
+  tags:
+    - kdump
+    - crashdump
+    - coredump
+    - dump
+  roles:
+    - kdump
+  #tasks:
+    # configure raspberry pi kernel
+    # DEFAULT RASBIAN PI KERNEL DOES NOT SUPPORT THIS
+    #- name: configure kdump reserved RAM on the raspberry pi
+    #  become: yes
+    #  replace:
+    #    path: /boot/cmdline.txt
+    #    regexp: '((?s)^((?!crashkernel={{ kdump_crashkernel_mem }}).)*)\n$'
+    #    replace: '\1 crashkernel={{ kdump_crashkernel_mem }}\n'
+    #  when:
+    #    - (ansible_distribution | lower) == 'debian'
