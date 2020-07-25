@@ -24,10 +24,10 @@
     group: 'root'
     mode: 'u=rw,g=,o='
 
-- name: Writing wlan0 config
+- name: Writing wlan config
   become: yes
   template:
-    src: 'templates/wlan0.j2'
+    src: 'templates/wlan.j2'
     dest: '/etc/network/interfaces.d/wlan0'
     owner: 'root'
     group: 'root'

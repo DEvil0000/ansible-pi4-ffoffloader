@@ -1,0 +1,8 @@
+#
+# Ansible controlled
+#
+auto {{ hostapt_wifi_interface }}
+iface {{ hostapt_wifi_interface }} inet manual
+{% if hostapd_bridge %}
+        pre-up /sbin/brctl addif {{ hostapd_bridge }} {{ hostapt_wifi_interface }}
+{% endif %}

@@ -1,6 +1,0 @@
-#
-# Ansible controlled
-#
-auto wlan0
-iface wlan0 inet manual
-        pre-up /sbin/brctl addif {{ hostapd_bridge }} wlan0
