@@ -16,4 +16,5 @@
       - vlan
       - git
       - bc
+      - tshark
     state: present
