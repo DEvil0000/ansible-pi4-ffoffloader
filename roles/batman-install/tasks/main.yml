@@ -163,7 +163,7 @@
   become: yes
   template:
     src: br-community-segment.j2
-    dest: "/etc/network/interfaces.d/br-{{item[0]}}"
+    dest: "/etc/network/interfaces.d/90-br-{{item[0]}}"
   vars:
     community_segment: "{{item[0]}}"
     vlan_interface_name: "vlan{{ item[1] }}"
@@ -177,7 +177,7 @@
   become: yes
   template:
     src: vlan.j2
-    dest: "/etc/network/interfaces.d/vlan{{item[1]}}"
+    dest: "/etc/network/interfaces.d/20-vlan{{item[1]}}"
   vars:
     community_segment: "{{item[0]}}"
     vlan_id: "{{item[1]}}"
@@ -190,7 +190,7 @@
   become: yes
   template:
     src: vlan-mesh.j2
-    dest: "/etc/network/interfaces.d/vlan{{item[1]}}"
+    dest: "/etc/network/interfaces.d/20-vlan{{item[1]}}"
   vars:
     community_segment: "{{item[0]}}"
     vlan_id: "{{item[1]}}"
