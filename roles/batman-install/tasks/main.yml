@@ -116,6 +116,7 @@
     update_cache: yes
     pkg:
       - libnl-genl-3-dev
+      - pkg-config
     state: present
 
 - name: purge batctl package since we build the matching one
