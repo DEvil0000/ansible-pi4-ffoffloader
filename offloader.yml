@@ -43,7 +43,7 @@
     respondd_wan: "{{ outbound_lan_interface }}"
 
 - name: install and configure wifi AP
-  hosts: offloader
+  hosts: offloader_not
   tags:
     - wifi
     - wlan
@@ -51,6 +51,7 @@
   roles:
     - wifi-ap
   vars:
+    hostapd_ssid: "Freifunk"
     hostapd_bridge: "br-ffbsee"
 
 - name: install and activate kdump
@@ -73,3 +74,13 @@
     #    replace: '\1 crashkernel={{ kdump_crashkernel_mem }}\n'
     #  when:
     #    - (ansible_distribution | lower) == 'debian'
+
+- name: run unify docker container
+  hosts: offloader_crash
+  tags:
+    - docker
+    - unify
+    - unifi
+  tasks:
+    - command: "docker run --init -d --restart always --net=host -e TZ='Europe/Berlin' -v ~/unifi:/unifi --name unifi jacobalberty/unifi:stable"
+    #on arm :arm32v7
