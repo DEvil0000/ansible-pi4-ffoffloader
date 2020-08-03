@@ -42,6 +42,46 @@
     router_name: "bodensee-uboot"
     respondd_wan: "{{ outbound_lan_interface }}"
 
+- name: fix dhcp client issues
+  hosts: offloader
+  tags:
+    - dhcp
+  tasks:
+    - name: install dhcpcd client
+      become: yes
+      package:
+        name: dhcpcd5
+    - name: configure global dhcpcd config values
+      become: yes
+      lineinfile:
+        path: /etc/dhcpcd.conf
+        regexp: "^{{ item.keyword }}"
+        line: "{{ item.keyword }}{{ item.value | default('') }}"
+        insertbefore: BOF
+      loop:
+        - keyword: noipv4ll
+        - keyword: nogateway
+        - keyword: denyinterfaces
+          value: " bat* vlan*"
+    - name: configure dhcpcd interfaces
+      become: yes
+      blockinfile:
+        path: /etc/dhcpcd.conf
+        marker: "### {mark} ANSIBLE MANAGED BLOCK {{ item.name }} ###"
+        block: |
+          interface {{ item.name }}
+          {{ item.config | default("") }}
+      loop:
+        - name: "eth0"
+          config: "gateway"
+        - name: "br-welt"
+        - name: "br-ffbsee"
+    - name: purge legacy dhclient
+      become: yes
+      package:
+        name: isc-dhcp-client
+        state: absent
+
 - name: install and configure wifi AP
   hosts: offloader_not
   tags:
