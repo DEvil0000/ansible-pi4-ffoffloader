@@ -90,18 +90,21 @@
 - name: add module load config
   become: yes
   template:
-    src: batman-adv.module.j2
-    dest: /etc/modules-load.d/batman-adv.module.conf
+    src: module.j2
+    dest: /etc/modules-load.d/{{ item }}.module.conf
+  loop:
+    - batman-adv
+    - br_netfilter
 
 - name: make sure modules can be found
   become: yes
   command: depmod -a
   changed_when: false
 
-- name: load dummy module
+- name: load br_netfilter module
   become: yes
   modprobe:
-    name: dummy
+    name: br_netfilter
     state: present
 
 - name: load batman module
@@ -159,6 +162,17 @@
   apt:
     name: bridge-utils
     state: present
+
+- name: forward bridged packages unseen
+  become: yes
+  sysctl:
+    name: "{{ item }}"
+    value: '0'
+    state: present
+  loop:
+    - net.bridge.bridge-nf-call-arptables
+    - net.bridge.bridge-nf-call-iptables
+    - net.bridge.bridge-nf-call-ip6tables
 
 - name: "add module load config for br-{{item}}"
   become: yes
