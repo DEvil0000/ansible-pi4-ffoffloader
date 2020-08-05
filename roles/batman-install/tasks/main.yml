@@ -13,29 +13,6 @@
   command: uname -r
   register: ansible_kernel
 
-#TODO should only run on rasbian
-- name: download pri-source for the pi
-  become: yes
-  get_url:
-    url: https://raw.githubusercontent.com/notro/rpi-source/master/rpi-source
-    dest: /usr/local/bin/rpi-source
-    mode: '0555'
-  when: (ansible_distribution | lower) == 'debian'
-
-#TODO should only run on rasbian
-- name: update rpi source
-  become: yes
-  command: /usr/local/bin/rpi-source -q --tag-update
-  when: (ansible_distribution | lower) == 'debian'
-
-#TODO should only run on rasbian
-- name: run rpi source
-  become: yes
-  command: /usr/local/bin/rpi-source
-  register: rpi_source
-  failed_when: rpi_source.rc != 0 and rpi_source.rc != 1
-  when: (ansible_distribution | lower) == 'debian'
-
 - name: Install dkms and kernel-headers for batman-adv
   become: yes
   apt:
