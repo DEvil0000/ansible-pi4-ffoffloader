@@ -14,16 +14,20 @@ mtu 1406;
 
 status socket "/var/run/fastd.{{ community_segment }}.sock";
 
-on up "
-        batctl ra BATMAN_V
-        ip link set $INTERFACE down
-        ip link set address $(ip -br l | grep {{ outbound_lan_interface }} | egrep -o '([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})' | head -1) dev $INTERFACE
+on establish "
+        batctl ra {{batman_protocol_mode}}
         ip link set $INTERFACE up
-        batctl -m bat-{{ community_segment }} if add $INTERFACE
+        batctl meshif bat-{{ community_segment }} if add $INTERFACE
+        batctl meshif bat-{{ community_segment }} gw_mode client
+        ip link set bat-{{ community_segment }} up
+        ifup br-{{ community_segment }}
 ";
 
-on down "
-        batctl -m bat-{{ community_segment }} if del $INTERFACE
+on disestablish "
+        ifdown br-{{ community_segment }}
+        ip link set bat-{{ community_segment }} down
+        batctl meshif bat-{{ community_segment }} if del $INTERFACE
+        ip link set $INTERFACE down
 ";
 
 peer group "{{ community_segment }}" {

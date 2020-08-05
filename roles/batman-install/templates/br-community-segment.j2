@@ -1,12 +1,6 @@
 #
 # Ansible controlled
 #
-auto br-{{ community_segment }}
-iface br-{{ community_segment }} inet dhcp
+#auto br-{{ community_segment }}
+iface br-{{ community_segment }} inet manual
         bridge-ports bat-{{ community_segment }} {% for interface in additional_interfaces %}{{ interface }} {% endfor %}
-
-        pre-up /usr/sbin/batctl ra {{batman_protocol_mode}}
-        pre-up /sbin/ip link set bat-{{ community_segment }} up
-        pre-up /usr/sbin/batctl -m bat-{{ community_segment }} gw_mode client
-        pre-up /sbin/ip link set address $(ip -br l | grep {{ inbound_lan_interface }} | egrep -o '([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})' | head -1) dev bat-{{ community_segment }}
-        post-up /sbin/ip link set address $(ip -br l | grep {{ inbound_lan_interface }} | egrep -o '([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})' | head -1) dev br-{{ community_segment }}
