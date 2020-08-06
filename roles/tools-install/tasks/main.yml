@@ -16,4 +16,8 @@
       - vlan
       - git
       - bc
+      - tshark
+      - tcpdump
+      - iotop
+      - iftop
     state: present

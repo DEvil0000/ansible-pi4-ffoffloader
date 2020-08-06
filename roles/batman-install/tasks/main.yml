@@ -13,29 +13,6 @@
   command: uname -r
   register: ansible_kernel
 
-#TODO should only run on rasbian
-- name: download pri-source for the pi
-  become: yes
-  get_url:
-    url: https://raw.githubusercontent.com/notro/rpi-source/master/rpi-source
-    dest: /usr/local/bin/rpi-source
-    mode: '0555'
-  when: (ansible_distribution | lower) == 'debian'
-
-#TODO should only run on rasbian
-- name: update rpi source
-  become: yes
-  command: /usr/local/bin/rpi-source -q --tag-update
-  when: (ansible_distribution | lower) == 'debian'
-
-#TODO should only run on rasbian
-- name: run rpi source
-  become: yes
-  command: /usr/local/bin/rpi-source
-  register: rpi_source
-  failed_when: rpi_source.rc != 0 and rpi_source.rc != 1
-  when: (ansible_distribution | lower) == 'debian'
-
 - name: Install dkms and kernel-headers for batman-adv
   become: yes
   apt:
@@ -90,18 +67,21 @@
 - name: add module load config
   become: yes
   template:
-    src: batman-adv.module.j2
-    dest: /etc/modules-load.d/batman-adv.module.conf
+    src: module.j2
+    dest: /etc/modules-load.d/{{ item }}.module.conf
+  loop:
+    - batman-adv
+    - br_netfilter
 
 - name: make sure modules can be found
   become: yes
   command: depmod -a
   changed_when: false
 
-- name: load dummy module
+- name: load br_netfilter module
   become: yes
   modprobe:
-    name: dummy
+    name: br_netfilter
     state: present
 
 - name: load batman module
@@ -116,6 +96,7 @@
     update_cache: yes
     pkg:
       - libnl-genl-3-dev
+      - pkg-config
     state: present
 
 - name: purge batctl package since we build the matching one
@@ -159,11 +140,22 @@
     name: bridge-utils
     state: present
 
+- name: forward bridged packages unseen
+  become: yes
+  sysctl:
+    name: "{{ item }}"
+    value: '0'
+    state: present
+  loop:
+    - net.bridge.bridge-nf-call-arptables
+    - net.bridge.bridge-nf-call-iptables
+    - net.bridge.bridge-nf-call-ip6tables
+
 - name: "add module load config for br-{{item}}"
   become: yes
   template:
     src: br-community-segment.j2
-    dest: "/etc/network/interfaces.d/br-{{item[0]}}"
+    dest: "/etc/network/interfaces.d/90-br-{{item[0]}}"
   vars:
     community_segment: "{{item[0]}}"
     vlan_interface_name: "vlan{{ item[1] }}"
@@ -177,7 +169,7 @@
   become: yes
   template:
     src: vlan.j2
-    dest: "/etc/network/interfaces.d/vlan{{item[1]}}"
+    dest: "/etc/network/interfaces.d/20-vlan{{item[1]}}"
   vars:
     community_segment: "{{item[0]}}"
     vlan_id: "{{item[1]}}"
@@ -190,7 +182,7 @@
   become: yes
   template:
     src: vlan-mesh.j2
-    dest: "/etc/network/interfaces.d/vlan{{item[1]}}"
+    dest: "/etc/network/interfaces.d/20-vlan{{item[1]}}"
   vars:
     community_segment: "{{item[0]}}"
     vlan_id: "{{item[1]}}"
@@ -198,14 +190,3 @@
   tags:
     - vlan
     - vlans
-
-- name: Cronjob checking if bridge-interface is up and take it up otherwise
-  become: yes
-  cron:
-    name: "ReUp stuck bridge br-{{ item }}"
-    minute: "*/5"
-    hour: "*"
-    job: "ip a | grep -Eq ': br-{{ item }}:.*state UP' || ifup br-{{ item }}"
-  loop: "{{community_segments}}"
-  tags:
-    - brcronjob

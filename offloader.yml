@@ -42,8 +42,48 @@
     router_name: "bodensee-uboot"
     respondd_wan: "{{ outbound_lan_interface }}"
 
-- name: install and configure wifi AP
+- name: fix dhcp client issues
   hosts: offloader
+  tags:
+    - dhcp
+  tasks:
+    - name: install dhcpcd client
+      become: yes
+      package:
+        name: dhcpcd5
+    - name: configure global dhcpcd config values
+      become: yes
+      lineinfile:
+        path: /etc/dhcpcd.conf
+        regexp: "^{{ item.keyword }}"
+        line: "{{ item.keyword }}{{ item.value | default('') }}"
+        insertbefore: BOF
+      loop:
+        - keyword: noipv4ll
+        - keyword: nogateway
+        - keyword: denyinterfaces
+          value: " bat* vlan*"
+    - name: configure dhcpcd interfaces
+      become: yes
+      blockinfile:
+        path: /etc/dhcpcd.conf
+        marker: "### {mark} ANSIBLE MANAGED BLOCK {{ item.name }} ###"
+        block: |
+          interface {{ item.name }}
+          {{ item.config | default("") }}
+      loop:
+        - name: "eth0"
+          config: "gateway"
+        - name: "br-welt"
+        - name: "br-ffbsee"
+    - name: purge legacy dhclient
+      become: yes
+      package:
+        name: isc-dhcp-client
+        state: absent
+
+- name: install and configure wifi AP
+  hosts: offloader_not
   tags:
     - wifi
     - wlan
@@ -51,8 +91,8 @@
   roles:
     - wifi-ap
   vars:
-    hostapd_bridge:
-      - "br-ffbsee"
+    hostapd_ssid: "Freifunk"
+    hostapd_bridge: "br-ffbsee"
 
 - name: install alfred-scripts for ffbsee
   hosts: uboot
@@ -61,4 +101,35 @@
     - printmap
     - print-map
   roles:
-    - alfred-install
+    - alfred-install    
+
+- name: install and activate kdump
+  hosts: offloader
+  tags:
+    - kdump
+    - crashdump
+    - coredump
+    - dump
+  roles:
+    - kdump
+  #tasks:
+    # configure raspberry pi kernel
+    # DEFAULT RASBIAN PI KERNEL DOES NOT SUPPORT THIS
+    #- name: configure kdump reserved RAM on the raspberry pi
+    #  become: yes
+    #  replace:
+    #    path: /boot/cmdline.txt
+    #    regexp: '((?s)^((?!crashkernel={{ kdump_crashkernel_mem }}).)*)\n$'
+    #    replace: '\1 crashkernel={{ kdump_crashkernel_mem }}\n'
+    #  when:
+    #    - (ansible_distribution | lower) == 'debian'
+
+- name: run unify docker container
+  hosts: offloader_crash
+  tags:
+    - docker
+    - unify
+    - unifi
+  tasks:
+    - command: "docker run --init -d --restart always --net=host -e TZ='Europe/Berlin' -v ~/unifi:/unifi --name unifi jacobalberty/unifi:stable"
+    #on arm :arm32v7

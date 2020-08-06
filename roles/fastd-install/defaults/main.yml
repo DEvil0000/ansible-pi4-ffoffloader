@@ -1,4 +1,5 @@
 ---
+batman_protocol_mode: "BATMAN_V"
 fastd_secret_key: ''
 community_segments:
   - name: welt
