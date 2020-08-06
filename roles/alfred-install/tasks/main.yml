@@ -1,10 +1,25 @@
 ---
-- name: Download alfred
+- name: Install jq and netcat for parsing things out of the fastd-sockets
   become: yes
-  unarchive:
-    src: "{{ alfred_download_url }}"
-    dest: /usr/src/
-    remote_src: yes
+  apt:
+    update_cache: yes
+    pkg:
+      - jq
+      - netcat
+    state: present
+
+- name: delete alfred-directory if exists
+  become: yes
+  file:
+    path: /usr/src/alfred-{{batman_version}}
+    state: absent
+
+- name: Git clone alfred
+  become: yes
+  git:
+    repo: 'https://github.com/re4jh/alfred'
+    dest: /usr/src/alfred-{{batman_version}}/
+    version: v{{batman_version}}_ffbsee-patch
 
 - name: Build alfred
   become: yes
@@ -20,6 +35,20 @@
     chdir: /usr/src/alfred-{{batman_version}}/
     target: install
   become: yes
+
+- name: Check for scripts-directory
+  stat:
+    path: /home/{{ansible_user_id}}/scripts/
+  register: scripts_dir
+
+- name: "Create scripts-directory if not exists"
+  file:
+    path: /home/{{ansible_user_id}}/scripts/
+    state: directory
+    mode: 0755
+    group: "{{ ansible_user_id }}"
+    owner: "{{ ansible_user_id }}"
+  when: scripts_dir.stat.exists == false
 
 - name: Copy alfred-mapprint-script for ffbsee
   become: yes

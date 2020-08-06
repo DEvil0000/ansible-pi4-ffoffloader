@@ -18,14 +18,16 @@ rootfs_usage()
 
 print_basic() {
 	local community="{{ alfred_community }}"
-#	local version="{{ alfred_version }}"
-	local version="$(lsb_release -is)"
-	local name="{{ alfred_name }}"
-	local longitude="{{ alfred_longitude }}"
-	local latitude="{{ alfred_latitude }}"
-	local contact="{{ alfred_contact }}"
-	local autoupdater_enabled="{{ alfred_autoupdaterenabled }}"
-	local autoupdater_branch="{{ alfred_autoupdaterbranch }}"
+	local version="{{ alfred_router_version }}"
+	local name="{{ alfred_router_name }}"
+	local longitude="{{ alfred_router_longitude }}"
+	local latitude="{{ alfred_router_latitude }}"
+	local contact="{{ alfred_router_contact }}"
+	local autoupdater_enabled="{{ alfred_router_autoupdater_enabled }}"
+	local autoupdater_branch="{{ alfred_router_autoupdater_branch }}"
+	local manufacturer=$(dmidecode -s system-manufacturer)
+	local product=$(dmidecode -s system-product-name)
+	local version=$(dmidecode -s baseboard-version)
 
 	[ -n "$contact" ] && echo -n "\"contact\" : \"$contact\", "
 	[ -n "$name" ] && echo -n "\"name\" : \"$name\", "
@@ -41,21 +43,12 @@ print_basic() {
 		echo -n "\"latitude\" : $latitude, "
 	fi
 
-	batgwmac=$(batctl meshif bat-ffbsee gwl -n | grep -oP '(\*|=>)\s+([0-9a-f:]+)\s\([\d \.]+\)\s+([0-9a-f:]+)' | sed 's/\* \(.*\) (.*/\1/' | sed 's/://g')
+	manufacturer=$(dmidecode -t system | grep -Po '^[\t ]+Manufacturer:[\t ]+\K.*')
+	product=$(dmidecode -t system | grep -Po '^[\t ]+Product Name:[\t ]+\K.*')
+	echo -n "\"model\" : \"$manufacturer" - "$product\", "
 
-	mygw="$batgwmac"
-	if [ "$batgwmac" = "b2a02a544fc5" ]; then
-		mygw="gw01"
-	fi
-	if [ "$batgwmac" = "7a2785ad0b4d" ]; then
-		mygw="gw03"
-	fi
-	if [ "$batgwmac" = "8e1e276b36d5" ]; then
-		mygw="gw04"
-	fi
-
-	echo -n "\"model\" : \"$(cat /proc/cpuinfo | grep -Po '^Model[^:]+:[\t ]+\K.*')\", "
-	echo -n "\"using_gateway\" : \"$mygw\", "
+	mygwname=$(nc -U /var/run/fastd.ffbsee.sock | jq '.peers[] | select(.connection != null) | .name' | sed -e 's/^"//' -e 's/"$//')
+	echo -n "\"using_gateway\" : \"$mygwname\", "
 	echo -n "\"links\" : ["
 
 	printLink() { echo -n "{ \"smac\" : \"$(cat /sys/class/net/$3/address)\", \"dmac\" : \"$1\", \"qual\" : $2 }"; }
@@ -71,7 +64,7 @@ print_basic() {
 	echo -n '], '
 
 	macs=$(cat /sys/class/net/*/address)
-	echo -n "$(batctl meshif bat-ffbsee translocal -H 2> /dev/null | awk -v macs="$macs" 'BEGIN{c=0} {if (index(macs, $1) == 0){ c+=1 }} END {printf("\"clientcount\" : %d", c)}')"
+	echo -n "$(batctl meshif bat-ffbsee translocal -H 2 | grep -v "P"> /dev/null | awk -v macs="$macs" 'BEGIN{c=0} {if (index(macs, $1) == 0){ c+=1 }} END {printf("\"clientcount\" : %d", c)}')"
 }
 
 print_more() {
@@ -86,6 +79,11 @@ print_all() {
 	echo -n "\"memory_usage\" : $(memory_usage), "
 	echo -n "\"addresses\" : ["
 	ip -6 address show dev {{ alfred_interface_br }} 2> /dev/null | grep -v "{{ alfred_v6prefix }}::/64" | tr '/' ' ' | awk 'BEGIN{i=0} /inet/ { if($2 !~ /^fe80/) { printf("%s\"%s\"", (i ? ", " : ""), $2); i=1; }}'
+        listv4=$(ip -4 address show dev br-ffbsee 2> /dev/null | tr '/' ' ' | awk 'BEGIN{i=0} /inet/ { if($2 ~ /^10\.15\./) { printf("%s\"%s\"", (i ? ", " : ""), $2); i=1; }}')
+        if [ -n "$listv4" ]; then
+          echo -n ", "
+          echo -n $listv4
+        fi
 	echo -n "], "
 
 	print_more
