@@ -94,6 +94,15 @@
     hostapd_ssid: "Freifunk"
     hostapd_bridge: "br-ffbsee"
 
+- name: install alfred-scripts for ffbsee
+  hosts: uboot
+  tags:
+    - alfred
+    - printmap
+    - print-map
+  roles:
+    - alfred-install    
+
 - name: install and activate kdump
   hosts: offloader
   tags:

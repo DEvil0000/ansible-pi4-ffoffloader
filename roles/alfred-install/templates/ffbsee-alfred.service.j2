@@ -1,0 +1,14 @@
+[Unit]
+Description=Alfred
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/sbin/alfred -i {{ alfred_interface_br }} -b {{ alfred_interface_bat }} -u /var/run/alfred-ffbsee.sock
+
+WorkingDirectory=/tmp
+RestartSec=10
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,77 @@
+---
+- name: Install jq and netcat for parsing things out of the fastd-sockets
+  become: yes
+  apt:
+    update_cache: yes
+    pkg:
+      - jq
+      - netcat
+    state: present
+
+- name: delete alfred-directory if exists
+  become: yes
+  file:
+    path: /usr/src/alfred-{{batman_version}}
+    state: absent
+
+- name: Git clone alfred
+  become: yes
+  git:
+    repo: 'https://github.com/re4jh/alfred'
+    dest: /usr/src/alfred-{{batman_version}}/
+    version: v{{batman_version}}_ffbsee-patch
+
+- name: Build alfred
+  become: yes
+  make:
+    params:
+      CONFIG_ALFRED_GPSD: n
+    chdir: /usr/src/alfred-{{batman_version}}/
+
+- name: Run 'install' alfred as root
+  make:
+    params:
+      CONFIG_ALFRED_GPSD: n
+    chdir: /usr/src/alfred-{{batman_version}}/
+    target: install
+  become: yes
+
+- name: Check for scripts-directory
+  stat:
+    path: /home/{{ansible_user_id}}/scripts/
+  register: scripts_dir
+
+- name: "Create scripts-directory if not exists"
+  file:
+    path: /home/{{ansible_user_id}}/scripts/
+    state: directory
+    mode: 0755
+    group: "{{ ansible_user_id }}"
+    owner: "{{ ansible_user_id }}"
+  when: scripts_dir.stat.exists == false
+
+- name: Copy alfred-mapprint-script for ffbsee
+  become: yes
+  template:
+    src: print_map.sh.j2
+    dest: /home/{{ansible_user_id}}/scripts/alfred-print-map.sh
+    owner: "{{ansible_user_id}}"
+    group: "{{ansible_user_id}}"
+    mode: 'u=rwx,g=rx,o=rx'
+
+- name: Create ffbsee-alfred as a systemctl service
+  become: yes
+  template:
+    src: ffbsee-alfred.service.j2
+    dest: /etc/systemd/system/ffbsee-alfred.service
+    owner: root
+    group: root
+    mode: 'u=rw,g=r,o=r'
+
+- name: Cronjob for mapprint-script
+  become: yes
+  cron:
+    name: "Publish Data on ffbsee-alfred"
+    minute: "*/5"
+    hour: "*"
+    job: /home/{{ansible_user_id}}/scripts/alfred-print-map.sh -p > /dev/null
