@@ -95,13 +95,23 @@
     hostapd_bridge: "br-ffbsee"
 
 - name: install alfred-scripts for ffbsee
-  hosts: uboot
+  hosts: offloader
   tags:
     - alfred
     - printmap
     - print-map
   roles:
-    - alfred-install    
+    - alfred-install
+  vars:
+    alfred_maplevel: all
+    alfred_community: Bodensee
+    alfred_router_latitude: 47.78253
+    alfred_router_longitude: 9.61567
+    alfred_router_name: dolphin
+    alfred_router_version: 2.2.2
+    alfred_router_contact: alex@toolbox
+    alfred_router_autoupdater_enabled: false
+    alfred_router_autoupdater_branch: none
 
 - name: install and activate kdump
   hosts: offloader
