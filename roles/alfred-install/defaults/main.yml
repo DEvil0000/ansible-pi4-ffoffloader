@@ -1,7 +1,7 @@
 ---
 alfred_community: "Bodensee"
 alfred_version: "special edition"
-alfred_name: "uboot-offloader-pi"
+alfred_name: "{{ ansible_hostname }}"
 alfred_longitude: ""
 alfred_latitude: ""
 alfred_contact: "ibimsalfred@batman.cave"
