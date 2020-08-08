@@ -13,7 +13,7 @@
     - docker
   roles:
     - docker-install
-
+#TODO make sure /etc/network/interfaces only holds the dource-dir entry
 - name: install and configure batman
   hosts: offloader
   tags:
@@ -39,7 +39,8 @@
   roles:
     - respondd-install
   vars:
-    router_name: "bodensee-uboot"
+    router_hardware: "Raspberry Pi 4B"
+    router_contact: "alex@toolbox"
     respondd_wan: "{{ outbound_lan_interface }}"
 
 - name: fix dhcp client issues
@@ -107,7 +108,6 @@
     alfred_community: Bodensee
     alfred_router_latitude: 47.78253
     alfred_router_longitude: 9.61567
-    alfred_router_name: dolphin
     alfred_router_version: 2.2.2
     alfred_router_contact: alex@toolbox
     alfred_router_autoupdater_enabled: false
