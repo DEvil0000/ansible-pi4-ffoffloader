@@ -151,7 +151,7 @@
     - net.bridge.bridge-nf-call-iptables
     - net.bridge.bridge-nf-call-ip6tables
 
-- name: "add module load config for br-{{item}}"
+- name: "add bridge interface br-{{item}}"
   become: yes
   template:
     src: br-community-segment.j2
