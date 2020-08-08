@@ -59,14 +59,20 @@
     group: "{{ansible_user_id}}"
     mode: 'u=rwx,g=rx,o=rx'
 
-- name: Create ffbsee-alfred as a systemctl service
+- name: Create alfred-ffbsee as a systemctl service
   become: yes
   template:
-    src: ffbsee-alfred.service.j2
-    dest: /etc/systemd/system/ffbsee-alfred.service
+    src: alfred-ffbsee.service.j2
+    dest: /etc/systemd/system/alfred-ffbsee.service
     owner: root
     group: root
     mode: 'u=rw,g=r,o=r'
+
+- name: start and enable alfred
+  systemd:
+    name: alfred-ffbsee
+    enabled: yes
+    state: started
 
 - name: Cronjob for mapprint-script
   become: yes
