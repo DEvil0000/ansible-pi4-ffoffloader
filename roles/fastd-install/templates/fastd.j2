@@ -19,6 +19,7 @@ on establish "
         ip link set $INTERFACE up
         batctl meshif bat-{{ community_segment }} if add $INTERFACE
         batctl meshif bat-{{ community_segment }} gw_mode client
+        ip link set address $(ip -br l | grep {{ inbound_lan_interface }} | egrep -o '([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})' | head -1) dev bat-{{ community_segment }}
         ip link set bat-{{ community_segment }} up
         ifup br-{{ community_segment }}
 ";
