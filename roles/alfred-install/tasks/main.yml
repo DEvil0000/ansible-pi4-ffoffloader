@@ -69,6 +69,7 @@
     mode: 'u=rw,g=r,o=r'
 
 - name: start and enable alfred
+  become: yes
   systemd:
     name: alfred-ffbsee
     enabled: yes
