@@ -25,9 +25,9 @@ print_basic() {
 	local contact="{{ alfred_router_contact }}"
 	local autoupdater_enabled="{{ alfred_router_autoupdater_enabled }}"
 	local autoupdater_branch="{{ alfred_router_autoupdater_branch }}"
-	local manufacturer=$(dmidecode -s system-manufacturer)
-	local product=$(dmidecode -s system-product-name)
-	local version=$(dmidecode -s baseboard-version)
+	local manufacturer=$(/usr/sbin/dmidecode -s system-manufacturer)
+	local product=$(/usr/sbin/dmidecode -s system-product-name)
+	local version=$(/usr/sbin/dmidecode -s baseboard-version)
 
 	[ -n "$contact" ] && echo -n "\"contact\" : \"$contact\", "
 	[ -n "$name" ] && echo -n "\"name\" : \"$name\", "
@@ -43,8 +43,8 @@ print_basic() {
 		echo -n "\"latitude\" : $latitude, "
 	fi
 
-	manufacturer=$(dmidecode -t system | grep -Po '^[\t ]+Manufacturer:[\t ]+\K.*')
-	product=$(dmidecode -t system | grep -Po '^[\t ]+Product Name:[\t ]+\K.*')
+	manufacturer=$(/usr/sbin/dmidecode -t system | grep -Po '^[\t ]+Manufacturer:[\t ]+\K.*')
+	product=$(/usr/sbin/dmidecode -t system | grep -Po '^[\t ]+Product Name:[\t ]+\K.*')
 	echo -n "\"model\" : \"$manufacturer" - "$product\", "
 
 	mygwname=$(nc -U /var/run/fastd.ffbsee.sock | jq '.peers[] | select(.connection != null) | .name' | sed -e 's/^"//' -e 's/"$//')
@@ -55,7 +55,7 @@ print_basic() {
 	IFS="
 "
 	nd=0
-	for entry in $(batctl meshif bat-ffbsee neighbors -H 2> /dev/null | awk -F '[][)( \t]+' '/^[a-f0-9]/{ print($1, $3, $4) }'); do
+	for entry in $(/usr/local/sbin/batctl meshif bat-ffbsee neighbors -H 2> /dev/null | awk -F '[][)( \t]+' '/^[a-f0-9]/{ print($1, $3, $4) }'); do
 		[ $nd -eq 0 ] && nd=1 || echo -n ", "
 		IFS=" "
 		printLink $entry
@@ -64,7 +64,7 @@ print_basic() {
 	echo -n '], '
 
 	macs=$(cat /sys/class/net/*/address)
-	echo -n "$(batctl meshif bat-ffbsee translocal -H 2 | grep -v "P"> /dev/null | awk -v macs="$macs" 'BEGIN{c=0} {if (index(macs, $1) == 0){ c+=1 }} END {printf("\"clientcount\" : %d", c)}')"
+	echo -n "$(/usr/local/sbin/batctl meshif bat-ffbsee translocal -H 2 | grep -v "P"> /dev/null | awk -v macs="$macs" 'BEGIN{c=0} {if (index(macs, $1) == 0){ c+=1 }} END {printf("\"clientcount\" : %d", c)}')"
 }
 
 print_more() {
@@ -121,7 +121,7 @@ if [ "$1" = "-p" ]; then
 		pidof alfred > /dev/null || systemctl start ffbsee-alfred
 
 		#publish content via alfred
-		echo "$content" | gzip -c - | alfred -s 64 -u /var/run/alfred-ffbsee.sock
+		echo "$content" | gzip -c - | /usr/local/sbin/alfred -s 64 -u /var/run/alfred-ffbsee.sock
 
 		echo "map published"
 	else

@@ -78,6 +78,6 @@
   become: yes
   cron:
     name: "Publish Data on ffbsee-alfred"
-    minute: "*/5"
+    minute: "*/2"
     hour: "*"
     job: /home/{{ansible_user_id}}/scripts/alfred-print-map.sh -p > /dev/null
