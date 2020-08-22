@@ -6,6 +6,7 @@
     pkg:
       - jq
       - netcat
+      - libcap-dev
     state: present
 
 - name: delete alfred-directory if exists
