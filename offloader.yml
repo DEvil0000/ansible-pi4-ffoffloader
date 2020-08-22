@@ -63,7 +63,7 @@
           value: " bat* vlan*"
         - keyword: clientid
         - keyword: duid
-          state: abesent
+          state: absent
         - keyword: slaac
           value: hwaddr
     - name: configure dhcpcd interfaces
