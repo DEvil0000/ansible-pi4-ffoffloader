@@ -7,8 +7,8 @@ respondd_wan: "{{ outbound_lan_interface }}"
 
 alfred_maplevel: all
 alfred_community: Bodensee
-alfred_router_latitude: 47.596913
-alfred_router_longitude: 9.5425525
+alfred_router_latitude: 47.596924886
+alfred_router_longitude: 9.543090463
 alfred_router_version: 2.2.2
 alfred_router_contact: alex@toolbox
 alfred_router_autoupdater_enabled: false
