@@ -118,7 +118,9 @@ if [ "$1" = "-p" ]; then
 	content="$(print $map_level)"
 	if [ -n "$content" ]; then
 		#make sure alfred is running
-		pidof alfred > /dev/null || systemctl start ffbsee-alfred
+		if ! systemctl is-active alfred-ffbsee ; then
+			systemctl start alfred-ffbsee
+		fi
 
 		#publish content via alfred
 		echo "$content" | gzip -c - | /usr/local/sbin/alfred -s 64 -u /var/run/alfred-ffbsee.sock
