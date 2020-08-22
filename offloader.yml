@@ -54,12 +54,18 @@
         path: /etc/dhcpcd.conf
         regexp: "^{{ item.keyword }}"
         line: "{{ item.keyword }}{{ item.value | default('') }}"
+        state: "{{ item.state | default('present') }}"
         insertbefore: BOF
       loop:
         - keyword: noipv4ll
         - keyword: nogateway
         - keyword: denyinterfaces
           value: " bat* vlan*"
+        - keyword: clientid
+        - keyword: duid
+          state: abesent
+        - keyword: slaac
+          value: hwaddr
     - name: configure dhcpcd interfaces
       become: yes
       blockinfile:
