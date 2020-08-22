@@ -2,6 +2,7 @@
 alfred_community: "Bodensee"
 alfred_version: "special edition"
 alfred_name: "{{ ansible_hostname }}"
+alfred_router_name: "{{ ansible_hostname }}"
 alfred_longitude: ""
 alfred_latitude: ""
 alfred_contact: "ibimsalfred@batman.cave"
