@@ -69,7 +69,7 @@ print_basic() {
 	echo -n '], '
 
 	macs=$(cat /sys/class/net/*/address)
-	echo -n "$(/usr/sbin/batctl meshif bat-ffbsee translocal -H 2 | grep -v "P"> /dev/null | awk -v macs="$macs" 'BEGIN{c=0} {if (index(macs, $1) == 0){ c+=1 }} END {printf("\"clientcount\" : %d", c)}')"
+	echo -n "$(/usr/sbin/batctl meshif bat-ffbsee translocal -H 2 2> /dev/null | grep -v "P" | awk -v macs="$macs" 'BEGIN{c=0} {if (index(macs, $1) == 0){ c+=1 }} END {printf("\"clientcount\" : %d", c)}')"
 }
 
 print_more() {
