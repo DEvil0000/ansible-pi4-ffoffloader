@@ -27,7 +27,8 @@ print_basic() {
 	local autoupdater_branch="{{ alfred_router_autoupdater_branch }}"
 	local manufacturer=$(/usr/sbin/dmidecode -s system-manufacturer)
 	local product=$(/usr/sbin/dmidecode -s system-product-name)
-	local version=$(/usr/sbin/dmidecode -s baseboard-version)
+	local hw_version=$(/usr/sbin/dmidecode -s baseboard-version)
+	local os_desc=$(/usr/bin/lsb_release -ds)
 
 	[ -n "$contact" ] && echo -n "\"contact\" : \"$contact\", "
 	[ -n "$name" ] && echo -n "\"name\" : \"$name\", "
@@ -45,7 +46,11 @@ print_basic() {
 
 	manufacturer=$(/usr/sbin/dmidecode -t system | grep -Po '^[\t ]+Manufacturer:[\t ]+\K.*')
 	product=$(/usr/sbin/dmidecode -t system | grep -Po '^[\t ]+Product Name:[\t ]+\K.*')
-	echo -n "\"model\" : \"$manufacturer" - "$product\", "
+	if [ -z $product ]; then
+		echo -n "\"model\" : \"$manufacturer - $product - $hw_version\", "
+	else
+		echo -n "\"model\" : \"RaspberryPI - $os_desc\", "
+	fi
 
 	mygwname=$(nc -U /var/run/fastd.ffbsee.sock | jq '.peers[] | select(.connection != null) | .name' | sed -e 's/^"//' -e 's/"$//')
 	echo -n "\"using_gateway\" : \"$mygwname\", "
