@@ -47,9 +47,9 @@ print_basic() {
 	manufacturer=$(/usr/sbin/dmidecode -t system | grep -Po '^[\t ]+Manufacturer:[\t ]+\K.*')
 	product=$(/usr/sbin/dmidecode -t system | grep -Po '^[\t ]+Product Name:[\t ]+\K.*')
 	if [ -z $product ]; then
-		echo -n "\"model\" : \"$manufacturer - $product - $hw_version\", "
-	else
 		echo -n "\"model\" : \"RaspberryPI - $os_desc\", "
+	else
+		echo -n "\"model\" : \"$manufacturer - $product - $hw_version\", "
 	fi
 
 	mygwname=$(nc -U /var/run/fastd.ffbsee.sock | jq '.peers[] | select(.connection != null) | .name' | sed -e 's/^"//' -e 's/"$//')
