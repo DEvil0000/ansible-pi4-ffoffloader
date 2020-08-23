@@ -53,14 +53,15 @@
       lineinfile:
         path: /etc/dhcpcd.conf
         regexp: "^{{ item.keyword }}"
-        line: "{{ item.keyword }}{{ item.value | default('') }}"
+        line: "{{ item.keyword }} {{ item.value | default('') }}"
         state: "{{ item.state | default('present') }}"
         insertbefore: BOF
       loop:
         - keyword: noipv4ll
         - keyword: nogateway
+          state: abesent
         - keyword: denyinterfaces
-          value: " bat* vlan*"
+          value: "bat* vlan*"
         - keyword: clientid
         - keyword: duid
           state: abesent
@@ -76,7 +77,9 @@
           {{ item.config | default("") }}
       loop:
         - name: "eth0"
-          config: "gateway"
+          config: |
+            "gateway"
+            "metric 0"
         - name: "br-welt"
         - name: "br-ffbsee"
     - name: purge legacy dhclient
