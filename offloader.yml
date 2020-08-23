@@ -76,7 +76,7 @@
           interface {{ item.name }}
           {{ item.config | default("") }}
       loop:
-        - name: "eth0"
+        - name: "{{ outbound_lan_interface }}"
           config: |
             "gateway"
             "metric 0"
