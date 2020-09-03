@@ -14,3 +14,4 @@ mesh_vlan_ids:
   - 667
   - 124
 additional_bridge_interfaces: []
+vlans_out: True

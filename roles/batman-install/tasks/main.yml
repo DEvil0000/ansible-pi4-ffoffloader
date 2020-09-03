@@ -159,7 +159,8 @@
   vars:
     community_segment: "{{item[0]}}"
     vlan_interface_name: "vlan{{ item[1] }}"
-    additional_interfaces: "{{ [vlan_interface_name] | union(additional_bridge_interfaces) }}"
+    out_interface_name: "{{out_interface_name | default(vlan_interface_name) }}"
+    additional_interfaces: "{{ [out_interface_name] | union(additional_bridge_interfaces) }}"
   loop: "{{community_segments | zip(ff_vlan_ids) | list() }}"
   tags:
     - vlan
@@ -174,6 +175,7 @@
     community_segment: "{{item[0]}}"
     vlan_id: "{{item[1]}}"
   loop: "{{community_segments | zip(ff_vlan_ids) | list() }}"
+  when: vlans_out | bool
   tags:
     - vlan
     - vlans
@@ -187,6 +189,7 @@
     community_segment: "{{item[0]}}"
     vlan_id: "{{item[1]}}"
   loop: "{{community_segments | zip(mesh_vlan_ids) | list() }}"
+  when: vlans_out | bool
   tags:
     - vlan
     - vlans
