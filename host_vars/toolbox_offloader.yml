@@ -1,0 +1,18 @@
+---
+inbound_lan_interface: "enp3s0"
+outbound_lan_interface: "enp4s0"
+vlans_out: False
+out_interface_name: "{{inbound_lan_interface}}"
+
+#router_hardware: "Raspberry Pi 4B"
+router_contact: "alex@toolbox"
+respondd_wan: "{{ outbound_lan_interface }}"
+
+alfred_maplevel: all
+alfred_community: Bodensee
+alfred_router_latitude: 47.712318913
+alfred_router_longitude: 9.399648607
+alfred_router_version: 2.2.2
+alfred_router_contact: alex@toolbox
+alfred_router_autoupdater_enabled: false
+alfred_router_autoupdater_branch: none
