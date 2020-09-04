@@ -6,9 +6,9 @@
     pkg:
       - aptitude
       - fsarchiver
-      - iftop
       - nano
       - nmap
+      - iperf3
       - net-tools
       - speedtest-cli
       - tmux
