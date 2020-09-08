@@ -43,50 +43,28 @@
   hosts: offloader
   tags:
     - dhcp
-  tasks:
-    - name: install dhcpcd client
-      become: yes
-      package:
-        name: dhcpcd5
-    - name: configure global dhcpcd config values
-      become: yes
-      lineinfile:
-        path: /etc/dhcpcd.conf
-        regexp: "^{{ item.keyword }}"
-        line: "{{ item.keyword }} {{ item.value | default('') }}"
-        state: "{{ item.state | default('present') }}"
-        insertbefore: BOF
-      loop:
-        - keyword: noipv4ll
-        - keyword: nogateway
-          state: absent
-        - keyword: denyinterfaces
-          value: "bat* vlan*"
-        - keyword: clientid
-        - keyword: duid
-          state: absent
-        - keyword: slaac
-          value: hwaddr
-    - name: configure dhcpcd interfaces
-      become: yes
-      blockinfile:
-        path: /etc/dhcpcd.conf
-        marker: "### {mark} ANSIBLE MANAGED BLOCK {{ item.name }} ###"
-        block: |
-          interface {{ item.name }}
-          {{ item.config | default("") }}
-      loop:
-        - name: "{{ outbound_lan_interface }}"
-          config: |
-            "gateway"
-            "metric 0"
-        - name: "br-welt"
-        - name: "br-ffbsee"
-    - name: purge legacy dhclient
-      become: yes
-      package:
-        name: isc-dhcp-client
+  roles:
+    - dhcpcd
+  vars:
+    dhcpcd_global_config:
+      - keyword: noipv4ll
+      - keyword: nogateway
         state: absent
+      - keyword: denyinterfaces
+        value: "bat* vlan*"
+      - keyword: clientid
+      - keyword: duid
+        state: absent
+      - keyword: slaac
+        value: hwaddr
+    dhcpcd_interface_config:
+      - name: "{{ outbound_lan_interface }}"
+        config: |
+          "gateway"
+          "metric 0"
+      - name: "br-welt"
+      - name: "br-ffbsee"
+
 
 - name: install and configure wifi AP
   hosts: offloader_not

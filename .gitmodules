@@ -1,3 +1,6 @@
 [submodule "roles/kdump"]
 	path = roles/kdump
 	url = https://github.com/wingcon/ansible-role-kdump.git
+[submodule "roles/dhcpcd"]
+	path = roles/dhcpcd
+	url = https://github.com/DEvil0000/ansible-role-dhcpcd.git
