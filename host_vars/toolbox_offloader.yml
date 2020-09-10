@@ -4,7 +4,14 @@ outbound_lan_interface: "enp4s0"
 vlans_out: False
 out_interface_name: "{{inbound_lan_interface}}"
 
-#router_hardware: "Raspberry Pi 4B"
+community_segments:
+  - ffbsee
+ff_vlan_ids:
+  - 123
+mesh_vlan_ids:
+  - 124
+
+router_hardware: "custom"
 router_contact: "alex@toolbox"
 respondd_wan: "{{ outbound_lan_interface }}"
 
