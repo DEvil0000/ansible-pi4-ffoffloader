@@ -18,19 +18,131 @@ community_segments:
       port: 30011
   - name: ffbsee
     peers:
-    - name: "gw01"
+    - name: "gw01_1250"
       key: "7fa0b1bc37f77607ad273dbdcfd6a7a6f0c62139c969c68b1b0ce50ebaf86ce5"
       remote: "speedtest5.gw01.ffbsee.net"
       port: 1250
-    - name: "gw02"
+    - name: "gw02_1250"
       key: "29e965b4c8cf4ccf1d2387010965d0d4fa6d2713148c9d95730ffa0e9dfadc2e"
       remote: "speedtest5.gw02.ffbsee.net"
       port: 1250
-    - name: "gw03"
+    - name: "gw03_1250"
       key: "b59baed600c244df6b7f58d994958d53553828f7ad37bdac8a8be207af5ca5f8"
       remote: "speedtest5.gw03.ffbsee.net"
       port: 1250
-    - name: "gw04"
+    - name: "gw04_1250"
       key: "ab46cf23a48111d46451e32a60c18784ec47b903a5ae7c8df1c1ca38f73857fb"
       remote: "speedtest5.gw04.ffbsee.net"
       port: 1250
+    - name: "gw01_1251"
+      key: "a5cd3a3c2a2f88a536c6876249652006645e3befdecba5948aae67ed20ad8027"
+      remote: "speedtest5.gw01.ffbsee.net"
+      port: 1251
+    - name: "gw02_1251"
+      key: "5f63cf7b0f385c53354c79df62249063e4bf00c1de4a4fcd50fd4ed18e2a0056"
+      remote: "speedtest5.gw02.ffbsee.net"
+      port: 1251
+    - name: "gw03_1251"
+      key: "8903b13f013f5e227c15df096642528621dc552ffbc79008531b9e687ac98183"
+      remote: "speedtest5.gw03.ffbsee.net"
+      port: 1251
+    - name: "gw04_1251"
+      key: "3ccdbc9917f5ada551b861fc7632e63a63ab45b97cfb6090da4157da91d159a5"
+      remote: "speedtest5.gw04.ffbsee.net"
+      port: 1251
+    - name: "gw01_1252"
+      key: "3fe5c26669f0c7efc6cb84bce89785979282a4eaafba04c6736e89f7b068fb6f"
+      remote: "speedtest5.gw01.ffbsee.net"
+      port: 1252
+    - name: "gw02_1252"
+      key: "13350c4def16882f76ba0d8ab9c7648d08a39008eb072c351cab5e546a57c228"
+      remote: "speedtest5.gw02.ffbsee.net"
+      port: 1252
+    - name: "gw03_1252"
+      key: "782177f5179ac359b7dd111fa23716d88e68da33147a5ebb5b4c03f50414f95a"
+      remote: "speedtest5.gw03.ffbsee.net"
+      port: 1252
+    - name: "gw04_1252"
+      key: "26e2fffda94c713cfa122139a270aee1be5e34b41646962547fb3f1f135b384d"
+      remote: "speedtest5.gw04.ffbsee.net"
+      port: 1252
+    - name: "gw01_1253"
+      key: "7ce66df91660b2a3d4460ee9cb4d9af7a7fba7f7cac761c5c18aad1de6acde06"
+      remote: "speedtest5.gw01.ffbsee.net"
+      port: 1253
+    - name: "gw02_1253"
+      key: "94b4bd8d519e1ecc56170bc5d98ebd9f39e39126088315897e83f2271893f476"
+      remote: "speedtest5.gw02.ffbsee.net"
+      port: 1253
+    - name: "gw03_1253"
+      key: "d2c5628517397ed99a6d5d101066a801e23fe5436dea7c7a6335edf5ccb3c0c8"
+      remote: "speedtest5.gw03.ffbsee.net"
+      port: 1253
+    - name: "gw04_1253"
+      key: "64bb84e1d3da50d84b9dda8f7eda60de9c62dedb2857090b9cb73e4d6bab61fb"
+      remote: "speedtest5.gw04.ffbsee.net"
+      port: 1253
+    - name: "gw01_1254"
+      key: "6f4a3d8475bab1f025dc1dd01be69bb7f4b524dcb899669473a69db4f95d065f"
+      remote: "speedtest5.gw01.ffbsee.net"
+      port: 1254
+    - name: "gw02_1254"
+      key: "aac357c59bb35f17a24e202bb6bc83b506e767919cc60c3e5179e4ea4e7efbe5"
+      remote: "speedtest5.gw02.ffbsee.net"
+      port: 1254
+    - name: "gw03_1254"
+      key: "a6eed04b7540cf8d371bc00a6dd933c6b6da2ffffc4440d98fcd1bc2a588a64c"
+      remote: "speedtest5.gw03.ffbsee.net"
+      port: 1254
+    - name: "gw04_1254"
+      key: "b59b0084fbfc41a769330bd553b3363708f8a88846151ef4a1ed7c89f49de2cf"
+      remote: "speedtest5.gw04.ffbsee.net"
+      port: 1254
+    - name: "gw01_1255"
+      key: "8dec2f6ef0ce19d304c2dfc86b5eeb24de8b34803204f150281a97c43e90dc62"
+      remote: "speedtest5.gw01.ffbsee.net"
+      port: 1255
+    - name: "gw02_1255"
+      key: "9fd3eff0bda9a0c63810ea0dcfe304872879f57b64f12b45f23b9d4723a10460"
+      remote: "speedtest5.gw02.ffbsee.net"
+      port: 1255
+    - name: "gw03_1255"
+      key: "690424fc827ec94327ad6647b1e0a5b80af597acefa974a3ee6a8ab7db3db978"
+      remote: "speedtest5.gw03.ffbsee.net"
+      port: 1255
+    - name: "gw04_1255"
+      key: "e748dda2e6baf2394baedb93392d3a697579d400d038351cff392ecb3e503257"
+      remote: "speedtest5.gw04.ffbsee.net"
+      port: 1255
+    - name: "gw01_1256"
+      key: "7ba573c534ae265f13c0baac6ab93216df6d8b7dfda64259d5198e712c5a9498"
+      remote: "speedtest5.gw01.ffbsee.net"
+      port: 1256
+    - name: "gw02_1256"
+      key: "52d7780f906897390ec538863fca1c8dfa90a0aa8cf3b838da642f210205150e"
+      remote: "speedtest5.gw02.ffbsee.net"
+      port: 1256
+    - name: "gw03_1256"
+      key: "a97ad93acd39dc453c36f7b3f46238dd9740e1d412aed7aac4608e094e2baf97"
+      remote: "speedtest5.gw03.ffbsee.net"
+      port: 1256
+    - name: "gw04_1256"
+      key: "7c9f57c96db9264b6967707b1b37db78c815b07ccc57b8d172bd9c931bc5159b"
+      remote: "speedtest5.gw04.ffbsee.net"
+      port: 1256
+    - name: "gw01_1257"
+      key: "2fe28d54badc76993e7acf71dbae04061c743af37b84c0e45890850988d95d19"
+      remote: "speedtest5.gw01.ffbsee.net"
+      port: 1257
+    - name: "gw02_1257"
+      key: "37d00c6d6dae021e179edba76f993ccc86eee7534d48d7e55551f3fdc695a3a8"
+      remote: "speedtest5.gw02.ffbsee.net"
+      port: 1257
+    - name: "gw03_1257"
+      key: "bf4280e9ab6a00b0e21544a7a7aeaa5bcf1191ff4f47b62b545000189392fa35"
+      remote: "speedtest5.gw03.ffbsee.net"
+      port: 1257
+    - name: "gw04_1257"
+      key: "eb654b772441e2739d28db44f84f9daa8439e3bb02172f7fe845f4c8ef8a6637"
+      remote: "speedtest5.gw04.ffbsee.net"
+      port: 1257
