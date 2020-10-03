@@ -13,6 +13,7 @@
     - docker
   roles:
     - docker-install
+    - docker-unifi
 #TODO make sure /etc/network/interfaces only holds the dource-dir entry
 - name: install and configure batman
   hosts: offloader

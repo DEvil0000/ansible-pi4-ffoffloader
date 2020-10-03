@@ -1,0 +1,7 @@
+---
+- name: Copy Docker-Container-Startup-Script for Unifi-Controller
+  become: yes
+  template:
+    src: 'start-unifi-docker.sh.j2'
+    dest: "/home/{{ ansible_user }}/start-unifi-docker.sh"
+    mode: u=rwxr,g=rx,o=x
