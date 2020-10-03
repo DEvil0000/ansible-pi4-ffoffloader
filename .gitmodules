@@ -4,3 +4,6 @@
 [submodule "roles/dhcpcd"]
 	path = roles/dhcpcd
 	url = https://github.com/DEvil0000/ansible-role-dhcpcd.git
+[submodule "roles/docker-install"]
+	path = roles/docker-install
+	url = https://github.com/DEvil0000/ansible-role-docker-install.git
