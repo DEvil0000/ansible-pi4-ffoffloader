@@ -83,3 +83,20 @@
     minute: "*/2"
     hour: "*"
     job: /home/{{ansible_user_id}}/scripts/alfred-print-map.sh -p > /dev/null
+    
+- name: Copy robin-script for ffbsee
+  become: yes
+  template:
+    src: robin_print_map.sh.j2
+    dest: /home/{{ansible_user_id}}/scripts/robin-print-map.sh
+    owner: "{{ansible_user_id}}"
+    group: "{{ansible_user_id}}"
+    mode: 'u=rwx,g=rx,o=rx'
+    
+- name: Cronjob for robin-mapprint-script
+  become: yes
+  cron:
+    name: "Publish Data on ffbsee-robin"
+    minute: "*/5"
+    hour: "*"
+    job: /home/{{ansible_user_id}}/scripts/robin-print-map.sh -p > /dev/null

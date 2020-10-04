@@ -1,0 +1,46 @@
+#!/bin/bash
+#Print out local connection data for map creation
+
+# get a speedtestresult if none is found
+[ ! -f speedtestresult.json ] && speedtest --json > speedtestresult.json
+# get a speedtestresult if the one found is older than 1 day
+[[ $(date +%s -r speedtestresult.json) -lt $(date +%s --date="1 day ago") ]]  && speedtest --json > speedtestresult.json
+
+speed_down=$(cat speedtestresult.json | jq '.download')
+speed_up=$(cat speedtestresult.json | jq '.upload')
+speed_ping=$(cat speedtestresult.json | jq '.ping')
+speed_testhost=$(cat speedtestresult.json | jq '.server .host')
+speed_when=$(cat speedtestresult.json | jq '.timestamp')
+rx_bytes=$(cat /sys/class/net/{{ alfred_interface_br }}/statistics/rx_bytes)
+tx_bytes=$(cat /sys/class/net/{{ alfred_interface_br }}/statistics/tx_bytes)
+
+content="{"
+
+[ -n "$speed_down" ] && content=$content"\"downstream_bits\" : $speed_down, "
+[ -n "$speed_up" ] && content=$content"\"upstream_bits\" : $speed_up, "
+[ -n "$speed_ping" ] && content=$content"\"ping_ms\" : $speed_ping, "
+[ -n "$speed_testhost" ] && content=$content"\"test_host\" : $speed_testhost, "
+[ -n "$speed_when" ] && content=$content"\"tested_when\" : $speed_when, "
+[ -n "$rx_bytes" ] && content=$content"\"rx_bytes\" : $rx_bytes, "
+[ -n "$tx_bytes" ] && content=$content"\"tx_bytes\" : $tx_bytes"
+
+content=$content"}"
+
+if [ "$1" = "-p" ]; then
+
+	if [ -n "$content" ]; then
+		#make sure alfred is running
+		if ! systemctl is-active alfred-ffbsee ; then
+			systemctl start alfred-ffbsee
+		fi
+
+		#publish content via alfred
+		echo "$content" | /usr/local/sbin/alfred -s 69 -u /var/run/alfred-ffbsee.sock
+
+		echo "map published"
+	else
+		echo "nothing published"
+	fi
+else
+	echo  $content
+fi
