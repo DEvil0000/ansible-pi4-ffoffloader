@@ -30,8 +30,8 @@ if [ "$1" = "-p" ]; then
 
 	if [ -n "$content" ]; then
 		#make sure alfred is running
-		if ! systemctl is-active ffbsee-alfred ; then
-			systemctl start ffbsee-alfred
+		if ! systemctl is-active alfred-ffbsee ; then
+			systemctl start alfred-ffbsee
 		fi
 
 		#publish content via alfred
