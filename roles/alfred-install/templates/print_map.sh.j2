@@ -131,7 +131,7 @@ if [ "$1" = "-p" ]; then
 		fi
 
 		#publish content via alfred
-		echo "$content" | gzip -c - | /usr/local/sbin/alfred -s 64 -u /var/run/alfred-ffbsee.sock
+		echo "$content" | /usr/local/sbin/alfred -s 64 -u /var/run/alfred-ffbsee.sock
 
 		echo "map published"
 	else
