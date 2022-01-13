@@ -154,5 +154,5 @@ alfred_router_autoupdater_enabled: false
 alfred_router_autoupdater_branch: none
 alfred_router_name: Toolbox Bodensee e.V.
 alfred_manufacturer: Topmodel
-alfred_product: "$(lsb_release -s -d)"
-alfred_hw_version: "$(uname -r)"
+alfred_product: "$(/usr/bin/lsb_release -s -d)"
+alfred_hw_version: "$(/usr/bin/uname -r)"
