@@ -44,8 +44,6 @@ print_basic() {
 		echo -n "\"latitude\" : $latitude, "
 	fi
 
-	manufacturer=$(/usr/sbin/dmidecode -t system | grep -Po '^[\t ]+Manufacturer:[\t ]+\K.*')
-	product=$(/usr/sbin/dmidecode -t system | grep -Po '^[\t ]+Product Name:[\t ]+\K.*')
 	if [ -z "$product" ]; then
 		echo -n "\"model\" : \"RaspberryPI - $os_desc\", "
 	else
