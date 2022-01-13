@@ -25,9 +25,9 @@ print_basic() {
 	local contact="{{ alfred_router_contact }}"
 	local autoupdater_enabled="{{ alfred_router_autoupdater_enabled }}"
 	local autoupdater_branch="{{ alfred_router_autoupdater_branch }}"
-	local manufacturer=$(/usr/sbin/dmidecode -s system-manufacturer)
-	local product=$(/usr/sbin/dmidecode -s system-product-name)
-	local hw_version=$(/usr/sbin/dmidecode -s baseboard-version)
+	local manufacturer="{{ alfred_manufacturer }}"
+	local product="{{ alfred_product }}"
+	local hw_version="{{ alfred_hw_version }}"
 	local os_desc=$(/usr/bin/lsb_release -ds)
 
 	[ -n "$contact" ] && echo -n "\"contact\" : \"$contact\", "
