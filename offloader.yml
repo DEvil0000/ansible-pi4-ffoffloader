@@ -112,5 +112,5 @@
     - unify
     - unifi
   tasks:
-    - command: "docker run --init -d --restart always --net=host -e TZ='Europe/Berlin' -v ~/unifi:/unifi --name unifi jacobalberty/unifi:stable"
+    - command: "docker run --init -d --restart always --net=host -e TZ='Europe/Berlin' -v ~/unifi:/unifi --name unifi jacobalberty/unifi:latest"
     #on arm :arm32v7
