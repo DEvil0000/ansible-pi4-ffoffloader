@@ -7,6 +7,10 @@
   roles:
     - tools-install
 
+- hosts: offloader
+  roles:
+    - role: interfaces
+
 - name: Install Docker Stuff
   hosts: offloader
   tags:

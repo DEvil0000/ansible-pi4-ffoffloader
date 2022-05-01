@@ -3,15 +3,3 @@ batman_version: "2020.1"
 batman_download_url: "https://downloads.open-mesh.org/batman/releases/batman-adv-{{batman_version}}/batman-adv-{{batman_version}}.tar.gz"
 batctl_download_url: "https://downloads.open-mesh.org/batman/releases/batman-adv-{{batman_version}}/batctl-{{batman_version}}.tar.gz"
 batman_protocol_mode: "BATMAN_V"
-community_segments:
-  - welt
-  - ffbsee
-inbound_lan_interface: "eth0"
-ff_vlan_ids:
-  - 666
-  - 123
-mesh_vlan_ids:
-  - 667
-  - 124
-additional_bridge_interfaces: []
-vlans_out: True

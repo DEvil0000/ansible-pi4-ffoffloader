@@ -7,3 +7,6 @@
 [submodule "roles/docker-install"]
 	path = roles/docker-install
 	url = https://github.com/DEvil0000/ansible-role-docker-install.git
+[submodule "roles/interfaces"]
+	path = roles/interfaces
+	url = https://github.com/avinetworks/ansible-role-network_interface.git

@@ -1,6 +1,0 @@
-#
-# Ansible controlled
-#
-#auto br-{{ community_segment }}
-iface br-{{ community_segment }} inet manual
-        bridge-ports bat-{{ community_segment }} {% for interface in additional_interfaces %}{{ interface }} {% endfor %}
