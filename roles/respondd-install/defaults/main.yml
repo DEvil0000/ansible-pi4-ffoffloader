@@ -1,5 +1,0 @@
----
-respondd_wan: "eth0"
-router_name: "{{ ansible_hostname }}"
-router_hardware: "Raspberry Pi 4B"
-router_contact: "@ ffbsee"
