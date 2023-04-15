@@ -10,3 +10,15 @@
 [submodule "roles/interfaces"]
 	path = roles/interfaces
 	url = https://github.com/avinetworks/ansible-role-network_interface.git
+[submodule "roles/respondd-install"]
+	path = roles/respondd-install
+	url = https://github.com/DEvil0000/ansible-role-respondd-install.git
+[submodule "roles/fastd-install"]
+	path = roles/fastd-install
+	url = https://github.com/DEvil0000/ansible-role-fastd-install.git
+[submodule "roles/alfred-install"]
+	path = roles/alfred-install
+	url = https://github.com/DEvil0000/ansible-role-alfred-install.git
+[submodule "roles/batman-install"]
+	path = roles/batman-install
+	url = https://github.com/DEvil0000/ansible-role-batman-install.git
